@@ -43,25 +43,6 @@
             margin-bottom: 10px;
         }
         
-        .backup-status {
-            background: rgba(16, 185, 129, 0.9);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 12px;
-            text-align: center;
-            display: none;
-        }
-        
-        .backup-status.warning {
-            background: rgba(245, 158, 11, 0.9);
-        }
-        
-        .backup-status.error {
-            background: rgba(239, 68, 68, 0.9);
-        }
-        
         .task-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
@@ -134,7 +115,7 @@
             background: #6b7280;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 8px;
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
@@ -216,8 +197,8 @@
             border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
-            margin: 5px 5px 5px 0;
-            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 5px;
         }
         
         .btn-primary {
@@ -228,16 +209,6 @@
         .btn-secondary {
             background: #e5e7eb;
             color: #374151;
-        }
-        
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
         }
         
         .install-prompt {
@@ -282,71 +253,11 @@
             cursor: pointer;
             padding: 4px;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 12px;
         }
         
         .delete-btn:hover {
             background: rgba(239, 68, 68, 0.1);
-        }
-        
-        /* バックアップ設定セクション */
-        .backup-section {
-            border-top: 1px solid #e5e7eb;
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-        
-        .backup-section h4 {
-            color: #374151;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .backup-option {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .backup-info {
-            background: #f3f4f6;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 10px;
-        }
-        
-        .backup-list {
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        
-        .backup-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #f3f4f6;
-            font-size: 12px;
-        }
-        
-        .backup-item:last-child {
-            border-bottom: none;
-        }
-        
-        .backup-item-info {
-            flex: 1;
-        }
-        
-        .backup-item-actions {
-            display: flex;
-            gap: 5px;
         }
         
         /* カレンダースタイル */
@@ -551,11 +462,6 @@
             <button onclick="closeInstallPrompt()" style="background: transparent; color: white;">×</button>
         </div>
         
-        <!-- バックアップ状態表示 -->
-        <div id="backup-status" class="backup-status">
-            🔄 自動バックアップが有効です
-        </div>
-        
         <!-- ヘッダー -->
         <div class="header">
             <h1>🔥 毎日タスクトラッカー</h1>
@@ -584,7 +490,7 @@
     <div id="add-task-modal" class="modal">
         <div class="modal-content">
             <h3>新しいタスクを追加</h3>
-            <input type="text" id="task-name-input" class="input-field" placeholder="タスク名を入力">
+            <input type="text" id="task-name-input" class="input-field" placeholder="タスク名を入力" maxlength="50">
             <div>
                 <button class="btn btn-primary" onclick="addTask()">追加</button>
                 <button class="btn btn-secondary" onclick="closeAddTaskModal()">キャンセル</button>
@@ -684,54 +590,18 @@
         <div class="modal-content">
             <h3>⚙️ 設定</h3>
             
-            <!-- 基本的なエクスポート・インポート -->
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="exportData()">📤 今すぐエクスポート</button>
+            <div style="margin-bottom: 15px;">
+                <button class="btn btn-primary" onclick="exportData()" style="width: 100%; margin-bottom: 10px;">📤 データをエクスポート</button>
                 <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
-                <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 インポート</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()" style="width: 100%;">📥 データをインポート</button>
             </div>
             
-            <!-- 自動バックアップ設定 -->
-            <div class="backup-section">
-                <h4>🔄 自動バックアップ設定</h4>
-                
-                <div class="backup-option">
-                    <input type="checkbox" id="auto-backup-enabled" onchange="updateAutoBackupSettings()">
-                    <label for="auto-backup-enabled">自動バックアップを有効にする</label>
-                </div>
-                
-                <div class="backup-option">
-                    <label for="backup-frequency">頻度: </label>
-                    <select id="backup-frequency" onchange="updateAutoBackupSettings()">
-                        <option value="daily">毎日</option>
-                        <option value="weekly">毎週</option>
-                        <option value="on-change">データ変更時</option>
-                    </select>
-                </div>
-                
-                <div class="backup-option">
-                    <input type="checkbox" id="backup-before-update" onchange="updateAutoBackupSettings()">
-                    <label for="backup-before-update">アプリ更新前にバックアップ</label>
-                </div>
-                
-                <div class="backup-info">
-                    <strong>最終バックアップ:</strong> <span id="last-backup-info">未実行</span><br>
-                    <strong>保存場所:</strong> ダウンロードフォルダ
-                </div>
-                
-                <button class="btn btn-success" onclick="createBackup(true)">🔄 今すぐバックアップ実行</button>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 12px; color: #6b7280; margin-bottom: 15px;">
+                <strong>💡 バックアップのすすめ</strong><br>
+                定期的にデータをエクスポートして、安全な場所（GoogleDriveなど）に保存することをお勧めします。
             </div>
             
-            <!-- バックアップ履歴 -->
-            <div class="backup-section">
-                <h4>📋 バックアップ履歴</h4>
-                <div class="backup-list" id="backup-history">
-                    <!-- バックアップ履歴が動的に生成される -->
-                </div>
-                <button class="btn btn-warning" onclick="clearBackupHistory()">履歴をクリア</button>
-            </div>
-            
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 20px; text-align: center;">
                 <button class="btn btn-secondary" onclick="closeSettings()">閉じる</button>
             </div>
         </div>
@@ -747,159 +617,512 @@
         let taskToDelete = null;
         let currentHistoryTask = null;
         let currentCalendarDate = new Date();
-        let backupSettings = {
-            autoBackupEnabled: true,
-            backupFrequency: 'weekly',
-            backupBeforeUpdate: true,
-            lastBackup: null
-        };
-        let backupHistory = [];
-        let lastDataHash = '';
         
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
-            loadTasks();
-            loadBackupSettings();
-            loadBackupHistory();
-            renderTasks();
-            registerServiceWorker();
-            checkInstallPrompt();
-            initializeAutoBackup();
-            updateBackupStatus();
+            console.log('アプリケーション開始');
             
-            // 通知許可の取得
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
+            try {
+                loadTasks();
+                renderTasks();
+                registerServiceWorker();
+                checkInstallPrompt();
+                
+                // 通知許可の取得
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+                
+                console.log('初期化完了');
+            } catch (error) {
+                console.error('初期化エラー:', error);
+                showToast('アプリの初期化中にエラーが発生しました');
             }
-            
-            // アプリ更新検知
-            detectAppUpdate();
         });
         
         // ローカルストレージからタスクを読み込み
         function loadTasks() {
-            const stored = localStorage.getItem('habit-tracker-tasks');
-            tasks = stored ? JSON.parse(stored) : [];
-            lastDataHash = generateDataHash(tasks);
-        }
-        
-        // バックアップ設定を読み込み
-        function loadBackupSettings() {
-            const stored = localStorage.getItem('habit-tracker-backup-settings');
-            if (stored) {
-                backupSettings = { ...backupSettings, ...JSON.parse(stored) };
+            try {
+                const stored = localStorage.getItem('habit-tracker-tasks');
+                tasks = stored ? JSON.parse(stored) : [];
+                console.log('タスク読み込み完了:', tasks.length + '件');
+            } catch (error) {
+                console.error('タスク読み込みエラー:', error);
+                tasks = [];
+                showToast('データの読み込みに失敗しました。新規作成します。');
             }
-            
-            // UI更新
-            document.getElementById('auto-backup-enabled').checked = backupSettings.autoBackupEnabled;
-            document.getElementById('backup-frequency').value = backupSettings.backupFrequency;
-            document.getElementById('backup-before-update').checked = backupSettings.backupBeforeUpdate;
-            
-            if (backupSettings.lastBackup) {
-                const date = new Date(backupSettings.lastBackup);
-                document.getElementById('last-backup-info').textContent = 
-                    `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-            }
-        }
-        
-        // バックアップ履歴を読み込み
-        function loadBackupHistory() {
-            const stored = localStorage.getItem('habit-tracker-backup-history');
-            backupHistory = stored ? JSON.parse(stored) : [];
-            renderBackupHistory();
         }
         
         // タスクを保存
         function saveTasks() {
-            localStorage.setItem('habit-tracker-tasks', JSON.stringify(tasks));
-            
-            // データ変更検知
-            const newHash = generateDataHash(tasks);
-            if (newHash !== lastDataHash) {
-                lastDataHash = newHash;
-                onDataChanged();
-            }
-        }
-        
-        // バックアップ設定を保存
-        function saveBackupSettings() {
-            localStorage.setItem('habit-tracker-backup-settings', JSON.stringify(backupSettings));
-        }
-        
-        // バックアップ履歴を保存
-        function saveBackupHistory() {
-            // 最新10件のみ保持
-            backupHistory = backupHistory.slice(-10);
-            localStorage.setItem('habit-tracker-backup-history', JSON.stringify(backupHistory));
-        }
-        
-        // データハッシュ生成
-        function generateDataHash(data) {
-            return btoa(JSON.stringify(data)).substring(0, 10);
-        }
-        
-        // データ変更時の処理
-        function onDataChanged() {
-            if (backupSettings.autoBackupEnabled && backupSettings.backupFrequency === 'on-change') {
-                // 少し遅延させて連続変更を防ぐ
-                setTimeout(() => createBackup(false), 2000);
-            }
-        }
-        
-        // 自動バックアップの初期化
-        function initializeAutoBackup() {
-            if (!backupSettings.autoBackupEnabled) return;
-            
-            // 定期チェック（1時間ごと）
-            setInterval(checkScheduledBackup, 60 * 60 * 1000);
-            
-            // 初回チェック
-            setTimeout(checkScheduledBackup, 10000);
-        }
-        
-        // スケジュールされたバックアップをチェック
-        function checkScheduledBackup() {
-            if (!backupSettings.autoBackupEnabled) return;
-            
-            const now = new Date();
-            const lastBackup = backupSettings.lastBackup ? new Date(backupSettings.lastBackup) : null;
-            
-            let shouldBackup = false;
-            
-            if (!lastBackup) {
-                shouldBackup = true;
-            } else if (backupSettings.backupFrequency === 'daily') {
-                const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-                shouldBackup = lastBackup < oneDayAgo;
-            } else if (backupSettings.backupFrequency === 'weekly') {
-                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                shouldBackup = lastBackup < oneWeekAgo;
-            }
-            
-            if (shouldBackup) {
-                createBackup(false);
-            }
-        }
-        
-        // バックアップ作成
-        function createBackup(manual = false) {
             try {
-                const backupData = {
-                    tasks: tasks,
-                    backupSettings: backupSettings,
-                    exportDate: new Date().toISOString(),
-                    version: '1.2.0',
-                    type: manual ? 'manual' : 'automatic'
+                localStorage.setItem('habit-tracker-tasks', JSON.stringify(tasks));
+                console.log('タスク保存完了:', tasks.length + '件');
+            } catch (error) {
+                console.error('タスク保存エラー:', error);
+                showToast('データの保存に失敗しました');
+            }
+        }
+        
+        // タスクを画面に表示
+        function renderTasks() {
+            try {
+                const taskList = document.getElementById('task-list');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (!taskList || !emptyState) {
+                    console.error('必要な要素が見つかりません');
+                    return;
+                }
+                
+                if (tasks.length === 0) {
+                    taskList.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                
+                taskList.innerHTML = tasks.map(task => {
+                    const streak = calculateStreak(task.completedDates || []);
+                    const completedToday = isCompletedToday(task);
+                    
+                    return `
+                        <div class="task-card">
+                            <div class="task-header">
+                                <div class="task-name">${escapeHtml(task.name || '')}</div>
+                                <div class="task-buttons">
+                                    <button class="icon-btn" onclick="openHistory(${task.id})" title="履歴を表示">📊</button>
+                                    <button class="delete-btn" onclick="openDeleteConfirm(${task.id}, '${escapeHtml(task.name || '')}')" title="削除">🗑️</button>
+                                </div>
+                            </div>
+                            
+                            <div class="weekly-view">
+                                ${generateWeeklyView(task.completedDates || [])}
+                            </div>
+                            
+                            <div class="streak-info">
+                                <div>
+                                    <span class="streak-number">🔥 ${streak}</span>
+                                    <span class="streak-text">日連続</span>
+                                </div>
+                                <div class="streak-text">累計: ${(task.completedDates || []).length}日</div>
+                            </div>
+                            
+                            <button class="complete-btn" onclick="completeTask(${task.id})" ${completedToday ? 'disabled' : ''}>
+                                ${completedToday ? '✅ 今日は完了済み' : '今日のタスクを完了'}
+                            </button>
+                            
+                            ${completedToday ? '<div style="text-align: center; color: #10b981; font-size: 14px; margin-top: 8px;">🎉 よくやった！</div>' : ''}
+                        </div>
+                    `;
+                }).join('');
+                
+                console.log('タスク表示更新完了');
+            } catch (error) {
+                console.error('タスク表示エラー:', error);
+                showToast('タスクの表示中にエラーが発生しました');
+            }
+        }
+        
+        // 直近7日間の表示を生成
+        function generateWeeklyView(completedDates) {
+            try {
+                const today = new Date();
+                const completedSet = new Set(completedDates || []);
+                let weeklyHtml = '';
+                
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const day = date.getDate();
+                    const isCompleted = completedSet.has(dateStr);
+                    const isToday = i === 0;
+                    
+                    let className = 'week-day';
+                    if (isCompleted) className += ' completed';
+                    else if (isToday) className += ' today';
+                    
+                    weeklyHtml += `<div class="${className}">${day}</div>`;
+                }
+                
+                return weeklyHtml;
+            } catch (error) {
+                console.error('週表示生成エラー:', error);
+                return '';
+            }
+        }
+        
+        // HTML エスケープ
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+        
+        // 連続日数を計算
+        function calculateStreak(completedDates) {
+            try {
+                if (!completedDates || completedDates.length === 0) return 0;
+                
+                const sortedDates = [...completedDates].sort().reverse();
+                let streak = 0;
+                
+                for (let i = 0; i < sortedDates.length; i++) {
+                    const expectedDate = new Date();
+                    expectedDate.setDate(expectedDate.getDate() - i);
+                    const expectedDateStr = expectedDate.toISOString().split('T')[0];
+                    
+                    if (sortedDates[i] === expectedDateStr) {
+                        streak++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                return streak;
+            } catch (error) {
+                console.error('連続日数計算エラー:', error);
+                return 0;
+            }
+        }
+        
+        // 今日完了しているかチェック
+        function isCompletedToday(task) {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                return (task.completedDates || []).includes(today);
+            } catch (error) {
+                console.error('完了チェックエラー:', error);
+                return false;
+            }
+        }
+        
+        // タスク追加モーダルを開く
+        function openAddTaskModal() {
+            try {
+                const modal = document.getElementById('add-task-modal');
+                const input = document.getElementById('task-name-input');
+                
+                if (modal && input) {
+                    modal.style.display = 'flex';
+                    input.focus();
+                }
+            } catch (error) {
+                console.error('タスク追加モーダルエラー:', error);
+                showToast('モーダルを開けませんでした');
+            }
+        }
+        
+        // タスク追加モーダルを閉じる
+        function closeAddTaskModal() {
+            try {
+                const modal = document.getElementById('add-task-modal');
+                const input = document.getElementById('task-name-input');
+                
+                if (modal) modal.style.display = 'none';
+                if (input) input.value = '';
+            } catch (error) {
+                console.error('タスク追加モーダル閉じるエラー:', error);
+            }
+        }
+        
+        // タスクを追加
+        function addTask() {
+            try {
+                const taskNameInput = document.getElementById('task-name-input');
+                if (!taskNameInput) {
+                    console.error('タスク名入力欄が見つかりません');
+                    return;
+                }
+                
+                const taskName = taskNameInput.value.trim();
+                if (!taskName) {
+                    showToast('タスク名を入力してください');
+                    return;
+                }
+                
+                const newTask = {
+                    id: Date.now(),
+                    name: taskName,
+                    completedDates: [],
+                    createdAt: new Date().toISOString()
                 };
                 
-                const dataStr = JSON.stringify(backupData, null, 2);
+                tasks.push(newTask);
+                saveTasks();
+                renderTasks();
+                closeAddTaskModal();
+                showToast('タスクを追加しました');
+                
+                console.log('タスク追加完了:', taskName);
+            } catch (error) {
+                console.error('タスク追加エラー:', error);
+                showToast('タスクの追加に失敗しました');
+            }
+        }
+        
+        // タスクを完了
+        function completeTask(taskId) {
+            try {
+                const task = tasks.find(t => t.id === taskId);
+                if (!task) {
+                    console.error('タスクが見つかりません:', taskId);
+                    return;
+                }
+                
+                const today = new Date().toISOString().split('T')[0];
+                if (!(task.completedDates || []).includes(today)) {
+                    if (!task.completedDates) task.completedDates = [];
+                    task.completedDates.push(today);
+                    saveTasks();
+                    renderTasks();
+                    showToast('🎉 タスクを完了しました！');
+                    
+                    // 通知を表示
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('タスク完了！', {
+                            body: `${task.name}を完了しました`,
+                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%236366f1"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('タスク完了エラー:', error);
+                showToast('タスクの完了処理に失敗しました');
+            }
+        }
+        
+        // 削除確認モーダルを開く
+        function openDeleteConfirm(taskId, taskName) {
+            try {
+                taskToDelete = taskId;
+                const nameElement = document.getElementById('delete-task-name');
+                const modal = document.getElementById('delete-confirm-modal');
+                
+                if (nameElement) nameElement.textContent = taskName;
+                if (modal) modal.style.display = 'flex';
+            } catch (error) {
+                console.error('削除確認モーダルエラー:', error);
+            }
+        }
+        
+        // 削除確認モーダルを閉じる
+        function closeDeleteConfirm() {
+            try {
+                taskToDelete = null;
+                const modal = document.getElementById('delete-confirm-modal');
+                if (modal) modal.style.display = 'none';
+            } catch (error) {
+                console.error('削除確認閉じるエラー:', error);
+            }
+        }
+        
+        // タスクを削除
+        function confirmDelete() {
+            try {
+                if (taskToDelete) {
+                    tasks = tasks.filter(t => t.id !== taskToDelete);
+                    saveTasks();
+                    renderTasks();
+                    showToast('タスクを削除しました');
+                    closeDeleteConfirm();
+                }
+            } catch (error) {
+                console.error('タスク削除エラー:', error);
+                showToast('タスクの削除に失敗しました');
+            }
+        }
+        
+        // 履歴モーダルを開く
+        function openHistory(taskId) {
+            try {
+                const task = tasks.find(t => t.id === taskId);
+                if (!task) return;
+                
+                currentHistoryTask = task;
+                currentCalendarDate = new Date();
+                
+                const nameElement = document.getElementById('history-task-name');
+                const streakElement = document.getElementById('current-streak');
+                const totalElement = document.getElementById('total-days');
+                
+                if (nameElement) nameElement.textContent = task.name;
+                if (streakElement) streakElement.textContent = calculateStreak(task.completedDates || []);
+                if (totalElement) totalElement.textContent = (task.completedDates || []).length;
+                
+                renderWeeklyView(task.completedDates || []);
+                renderCalendar(task.completedDates || []);
+                renderMonthlyStats(task.completedDates || []);
+                
+                const modal = document.getElementById('history-modal');
+                if (modal) modal.style.display = 'flex';
+            } catch (error) {
+                console.error('履歴モーダルエラー:', error);
+                showToast('履歴の表示に失敗しました');
+            }
+        }
+        
+        // 履歴モーダルを閉じる
+        function closeHistory() {
+            try {
+                const modal = document.getElementById('history-modal');
+                if (modal) modal.style.display = 'none';
+                currentHistoryTask = null;
+            } catch (error) {
+                console.error('履歴閉じるエラー:', error);
+            }
+        }
+        
+        // 直近7日間の表示をレンダリング
+        function renderWeeklyView(completedDates) {
+            try {
+                const weeklyView = document.getElementById('weekly-view');
+                if (!weeklyView) return;
+                
+                weeklyView.innerHTML = generateWeeklyView(completedDates);
+            } catch (error) {
+                console.error('週表示レンダリングエラー:', error);
+            }
+        }
+        
+        // カレンダーをレンダリング
+        function renderCalendar(completedDates) {
+            try {
+                const year = currentCalendarDate.getFullYear();
+                const month = currentCalendarDate.getMonth();
+                
+                // タイトルを更新
+                const titleElement = document.getElementById('calendar-title');
+                if (titleElement) {
+                    titleElement.textContent = `${year}年${month + 1}月`;
+                }
+                
+                // カレンダーの日付を生成
+                const firstDay = new Date(year, month, 1);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                const calendarDays = document.getElementById('calendar-days');
+                if (!calendarDays) return;
+                
+                const completedSet = new Set(completedDates || []);
+                const today = new Date().toISOString().split('T')[0];
+                
+                let html = '';
+                
+                for (let i = 0; i < 42; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+                    const dateStr = currentDate.toISOString().split('T')[0];
+                    const day = currentDate.getDate();
+                    const isCurrentMonth = currentDate.getMonth() === month;
+                    const isCompleted = completedSet.has(dateStr);
+                    const isToday = dateStr === today;
+                    
+                    let className = 'calendar-day';
+                    if (!isCurrentMonth) className += ' other-month';
+                    if (isCompleted) className += ' completed';
+                    if (isToday) className += ' today';
+                    
+                    html += `<div class="${className}">${day}</div>`;
+                }
+                
+                calendarDays.innerHTML = html;
+            } catch (error) {
+                console.error('カレンダーレンダリングエラー:', error);
+            }
+        }
+        
+        // 月を変更
+        function changeMonth(direction) {
+            try {
+                if (!currentHistoryTask) return;
+                
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+                renderCalendar(currentHistoryTask.completedDates || []);
+                renderMonthlyStats(currentHistoryTask.completedDates || []);
+            } catch (error) {
+                console.error('月変更エラー:', error);
+            }
+        }
+        
+        // 月間統計をレンダリング
+        function renderMonthlyStats(completedDates) {
+            try {
+                const year = currentCalendarDate.getFullYear();
+                const month = currentCalendarDate.getMonth();
+                
+                // その月の日付を取得
+                const lastDay = new Date(year, month + 1, 0);
+                const totalDaysInMonth = lastDay.getDate();
+                
+                // その月の完了日数を計算
+                const completedInMonth = (completedDates || []).filter(dateStr => {
+                    const date = new Date(dateStr);
+                    return date.getFullYear() === year && date.getMonth() === month;
+                }).length;
+                
+                const completionRate = Math.round((completedInMonth / totalDaysInMonth) * 100);
+                
+                const monthlyStats = document.getElementById('monthly-stats');
+                if (monthlyStats) {
+                    monthlyStats.innerHTML = `
+                        <div class="stats-header">${year}年${month + 1}月の実行状況</div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">${completedInMonth}</div>
+                                <div class="stat-label">実行日数</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${completionRate}%</div>
+                                <div class="stat-label">達成率</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('月間統計エラー:', error);
+            }
+        }
+        
+        // 設定モーダルを開く
+        function openSettings() {
+            try {
+                const modal = document.getElementById('settings-modal');
+                if (modal) modal.style.display = 'flex';
+            } catch (error) {
+                console.error('設定モーダルエラー:', error);
+            }
+        }
+        
+        // 設定モーダルを閉じる
+        function closeSettings() {
+            try {
+                const modal = document.getElementById('settings-modal');
+                if (modal) modal.style.display = 'none';
+            } catch (error) {
+                console.error('設定閉じるエラー:', error);
+            }
+        }
+        
+        // データをエクスポート
+        function exportData() {
+            try {
+                const exportData = {
+                    tasks: tasks,
+                    exportDate: new Date().toISOString(),
+                    version: '1.1.0'
+                };
+                
+                const dataStr = JSON.stringify(exportData, null, 2);
                 const blob = new Blob([dataStr], { type: 'application/json' });
-                
-                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                const fileName = `habit-backup-${timestamp}.json`;
-                
-                // ファイルダウンロード
                 const url = URL.createObjectURL(blob);
+                
+                const timestamp = new Date().toISOString().split('T')[0];
+                const fileName = `習慣データ_${timestamp}.json`;
+                
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = fileName;
@@ -909,522 +1132,64 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                // バックアップ記録更新
-                backupSettings.lastBackup = new Date().toISOString();
-                saveBackupSettings();
-                
-                // 履歴に追加
-                backupHistory.push({
-                    date: new Date().toISOString(),
-                    fileName: fileName,
-                    type: backupData.type,
-                    taskCount: tasks.length
-                });
-                saveBackupHistory();
-                renderBackupHistory();
-                
-                // UI更新
-                loadBackupSettings();
-                updateBackupStatus();
-                
-                const message = manual ? 
-                    '🔄 手動バックアップを作成しました' : 
-                    '✅ 自動バックアップを作成しました';
-                showToast(message);
-                
-                // 通知
-                if ('Notification' in window && Notification.permission === 'granted' && !manual) {
-                    new Notification('バックアップ完了', {
-                        body: 'データの自動バックアップが完了しました',
-                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%236366f1"/><text y="70" font-size="40" text-anchor="middle" x="50" fill="white">💾</text></svg>'
-                    });
-                }
-                
+                showToast('データをエクスポートしました');
+                console.log('エクスポート完了:', fileName);
             } catch (error) {
-                console.error('バックアップエラー:', error);
-                showToast('❌ バックアップに失敗しました');
+                console.error('エクスポートエラー:', error);
+                showToast('エクスポートに失敗しました');
             }
-        }
-        
-        // バックアップ設定更新
-        function updateAutoBackupSettings() {
-            backupSettings.autoBackupEnabled = document.getElementById('auto-backup-enabled').checked;
-            backupSettings.backupFrequency = document.getElementById('backup-frequency').value;
-            backupSettings.backupBeforeUpdate = document.getElementById('backup-before-update').checked;
-            
-            saveBackupSettings();
-            updateBackupStatus();
-            
-            // 設定変更時に初回バックアップを実行
-            if (backupSettings.autoBackupEnabled) {
-                setTimeout(() => createBackup(false), 1000);
-            }
-        }
-        
-        // バックアップ状態表示更新
-        function updateBackupStatus() {
-            const statusDiv = document.getElementById('backup-status');
-            
-            if (backupSettings.autoBackupEnabled) {
-                statusDiv.className = 'backup-status';
-                statusDiv.textContent = `🔄 自動バックアップ有効 (${getFrequencyText(backupSettings.backupFrequency)})`;
-                statusDiv.style.display = 'block';
-            } else {
-                statusDiv.className = 'backup-status warning';
-                statusDiv.textContent = '⚠️ 自動バックアップが無効です';
-                statusDiv.style.display = 'block';
-            }
-        }
-        
-        // 頻度テキスト取得
-        function getFrequencyText(frequency) {
-            switch (frequency) {
-                case 'daily': return '毎日';
-                case 'weekly': return '毎週';
-                case 'on-change': return 'データ変更時';
-                default: return frequency;
-            }
-        }
-        
-        // バックアップ履歴表示
-        function renderBackupHistory() {
-            const historyDiv = document.getElementById('backup-history');
-            
-            if (backupHistory.length === 0) {
-                historyDiv.innerHTML = '<div style="text-align: center; color: #9ca3af; padding: 20px;">バックアップ履歴がありません</div>';
-                return;
-            }
-            
-            historyDiv.innerHTML = backupHistory
-                .slice()
-                .reverse()
-                .map((backup, index) => {
-                    const date = new Date(backup.date);
-                    const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-                    const typeIcon = backup.type === 'manual' ? '👤' : '🤖';
-                    
-                    return `
-                        <div class="backup-item">
-                            <div class="backup-item-info">
-                                <div>${typeIcon} ${dateStr}</div>
-                                <div style="color: #9ca3af; font-size: 11px;">${backup.taskCount}個のタスク</div>
-                            </div>
-                            <div class="backup-item-actions">
-                                <button class="btn" style="font-size: 10px; padding: 4px 8px; background: #ef4444; color: white;" 
-                                        onclick="removeBackupFromHistory(${backupHistory.length - 1 - index})">削除</button>
-                            </div>
-                        </div>
-                    `;
-                })
-                .join('');
-        }
-        
-        // バックアップ履歴から削除
-        function removeBackupFromHistory(index) {
-            backupHistory.splice(index, 1);
-            saveBackupHistory();
-            renderBackupHistory();
-        }
-        
-        // バックアップ履歴をクリア
-        function clearBackupHistory() {
-            if (confirm('バックアップ履歴をすべて削除しますか？\n（実際のバックアップファイルは削除されません）')) {
-                backupHistory = [];
-                saveBackupHistory();
-                renderBackupHistory();
-                showToast('バックアップ履歴をクリアしました');
-            }
-        }
-        
-        // アプリ更新検知
-        function detectAppUpdate() {
-            const currentVersion = '1.2.0';
-            const storedVersion = localStorage.getItem('habit-tracker-app-version');
-            
-            if (storedVersion && storedVersion !== currentVersion) {
-                if (backupSettings.backupBeforeUpdate) {
-                    showToast('📱 アプリが更新されました。バックアップを作成します...');
-                    setTimeout(() => createBackup(false), 1000);
-                }
-            }
-            
-            localStorage.setItem('habit-tracker-app-version', currentVersion);
-        }
-        
-        // 既存の関数（省略可能だが完全性のため含める）
-        function renderTasks() {
-            const taskList = document.getElementById('task-list');
-            const emptyState = document.getElementById('empty-state');
-            
-            if (tasks.length === 0) {
-                taskList.innerHTML = '';
-                emptyState.style.display = 'block';
-                return;
-            }
-            
-            emptyState.style.display = 'none';
-            
-            taskList.innerHTML = tasks.map(task => {
-                const streak = calculateStreak(task.completedDates);
-                const completedToday = isCompletedToday(task);
-                
-                return `
-                    <div class="task-card">
-                        <div class="task-header">
-                            <div class="task-name">${escapeHtml(task.name)}</div>
-                            <div class="task-buttons">
-                                <button class="icon-btn" onclick="openHistory(${task.id})" title="履歴を表示">📊</button>
-                                <button class="delete-btn" onclick="openDeleteConfirm(${task.id}, '${escapeHtml(task.name)}')" title="削除">🗑️</button>
-                            </div>
-                        </div>
-                        
-                        <div class="weekly-view">
-                            ${generateWeeklyView(task.completedDates)}
-                        </div>
-                        
-                        <div class="streak-info">
-                            <div>
-                                <span class="streak-number">🔥 ${streak}</span>
-                                <span class="streak-text">日連続</span>
-                            </div>
-                            <div class="streak-text">累計: ${task.completedDates.length}日</div>
-                        </div>
-                        
-                        <button class="complete-btn" onclick="completeTask(${task.id})" ${completedToday ? 'disabled' : ''}>
-                            ${completedToday ? '✅ 今日は完了済み' : '今日のタスクを完了'}
-                        </button>
-                        
-                        ${completedToday ? '<div style="text-align: center; color: #10b981; font-size: 14px; margin-top: 8px;">🎉 よくやった！</div>' : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        // 直近7日間の表示を生成
-        function generateWeeklyView(completedDates) {
-            const today = new Date();
-            const completedSet = new Set(completedDates);
-            let weeklyHtml = '';
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                const day = date.getDate();
-                const isCompleted = completedSet.has(dateStr);
-                const isToday = i === 0;
-                
-                let className = 'week-day';
-                if (isCompleted) className += ' completed';
-                else if (isToday) className += ' today';
-                
-                weeklyHtml += `<div class="${className}">${day}</div>`;
-            }
-            
-            return weeklyHtml;
-        }
-        
-        // HTML エスケープ
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // 連続日数を計算
-        function calculateStreak(completedDates) {
-            if (!completedDates || completedDates.length === 0) return 0;
-            
-            const sortedDates = completedDates.sort().reverse();
-            let streak = 0;
-            
-            for (let i = 0; i < sortedDates.length; i++) {
-                const expectedDate = new Date();
-                expectedDate.setDate(expectedDate.getDate() - i);
-                const expectedDateStr = expectedDate.toISOString().split('T')[0];
-                
-                if (sortedDates[i] === expectedDateStr) {
-                    streak++;
-                } else {
-                    break;
-                }
-            }
-            
-            return streak;
-        }
-        
-        // 今日完了しているかチェック
-        function isCompletedToday(task) {
-            const today = new Date().toISOString().split('T')[0];
-            return task.completedDates.includes(today);
-        }
-        
-        // タスク追加モーダルを開く
-        function openAddTaskModal() {
-            document.getElementById('add-task-modal').style.display = 'flex';
-            document.getElementById('task-name-input').focus();
-        }
-        
-        // タスク追加モーダルを閉じる
-        function closeAddTaskModal() {
-            document.getElementById('add-task-modal').style.display = 'none';
-            document.getElementById('task-name-input').value = '';
-        }
-        
-        // タスクを追加
-        function addTask() {
-            const taskName = document.getElementById('task-name-input').value.trim();
-            if (!taskName) return;
-            
-            const newTask = {
-                id: Date.now(),
-                name: taskName,
-                completedDates: [],
-                createdAt: new Date().toISOString()
-            };
-            
-            tasks.push(newTask);
-            saveTasks();
-            renderTasks();
-            closeAddTaskModal();
-            showToast('タスクを追加しました');
-        }
-        
-        // タスクを完了
-        function completeTask(taskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (!task) return;
-            
-            const today = new Date().toISOString().split('T')[0];
-            if (!task.completedDates.includes(today)) {
-                task.completedDates.push(today);
-                saveTasks();
-                renderTasks();
-                showToast('🎉 タスクを完了しました！');
-                
-                // 通知を表示
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('タスク完了！', {
-                        body: `${task.name}を完了しました`,
-                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%236366f1"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
-                    });
-                }
-            }
-        }
-        
-        // 削除確認モーダルを開く
-        function openDeleteConfirm(taskId, taskName) {
-            taskToDelete = taskId;
-            document.getElementById('delete-task-name').textContent = taskName;
-            document.getElementById('delete-confirm-modal').style.display = 'flex';
-        }
-        
-        // 削除確認モーダルを閉じる
-        function closeDeleteConfirm() {
-            taskToDelete = null;
-            document.getElementById('delete-confirm-modal').style.display = 'none';
-        }
-        
-        // タスクを削除
-        function confirmDelete() {
-            if (taskToDelete) {
-                tasks = tasks.filter(t => t.id !== taskToDelete);
-                saveTasks();
-                renderTasks();
-                showToast('タスクを削除しました');
-                closeDeleteConfirm();
-            }
-        }
-        
-        // 履歴モーダルを開く
-        function openHistory(taskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (!task) return;
-            
-            currentHistoryTask = task;
-            currentCalendarDate = new Date();
-            
-            document.getElementById('history-task-name').textContent = task.name;
-            document.getElementById('current-streak').textContent = calculateStreak(task.completedDates);
-            document.getElementById('total-days').textContent = task.completedDates.length;
-            
-            renderWeeklyView(task.completedDates);
-            renderCalendar(task.completedDates);
-            renderMonthlyStats(task.completedDates);
-            
-            document.getElementById('history-modal').style.display = 'flex';
-        }
-        
-        // 履歴モーダルを閉じる
-        function closeHistory() {
-            document.getElementById('history-modal').style.display = 'none';
-            currentHistoryTask = null;
-        }
-        
-        // 直近7日間の表示をレンダリング
-        function renderWeeklyView(completedDates) {
-            const weeklyView = document.getElementById('weekly-view');
-            const today = new Date();
-            const completedSet = new Set(completedDates);
-            let html = '';
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                const day = date.getDate();
-                const isCompleted = completedSet.has(dateStr);
-                const isToday = i === 0;
-                
-                let className = 'week-day';
-                if (isCompleted) className += ' completed';
-                else if (isToday) className += ' today';
-                
-                html += `<div class="${className}">${day}</div>`;
-            }
-            
-            weeklyView.innerHTML = html;
-        }
-        
-        // カレンダーをレンダリング
-        function renderCalendar(completedDates) {
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            
-            // タイトルを更新
-            document.getElementById('calendar-title').textContent = `${year}年${month + 1}月`;
-            
-            // カレンダーの日付を生成
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const startDate = new Date(firstDay);
-            startDate.setDate(startDate.getDate() - firstDay.getDay());
-            
-            const calendarDays = document.getElementById('calendar-days');
-            const completedSet = new Set(completedDates);
-            const today = new Date().toISOString().split('T')[0];
-            
-            let html = '';
-            
-            for (let i = 0; i < 42; i++) {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + i);
-                const dateStr = currentDate.toISOString().split('T')[0];
-                const day = currentDate.getDate();
-                const isCurrentMonth = currentDate.getMonth() === month;
-                const isCompleted = completedSet.has(dateStr);
-                const isToday = dateStr === today;
-                
-                let className = 'calendar-day';
-                if (!isCurrentMonth) className += ' other-month';
-                if (isCompleted) className += ' completed';
-                if (isToday) className += ' today';
-                
-                html += `<div class="${className}">${day}</div>`;
-            }
-            
-            calendarDays.innerHTML = html;
-        }
-        
-        // 月を変更
-        function changeMonth(direction) {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
-            renderCalendar(currentHistoryTask.completedDates);
-            renderMonthlyStats(currentHistoryTask.completedDates);
-        }
-        
-        // 月間統計をレンダリング
-        function renderMonthlyStats(completedDates) {
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            
-            // その月の日付を取得
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const totalDaysInMonth = lastDay.getDate();
-            
-            // その月の完了日数を計算
-            const completedInMonth = completedDates.filter(dateStr => {
-                const date = new Date(dateStr);
-                return date.getFullYear() === year && date.getMonth() === month;
-            }).length;
-            
-            const completionRate = Math.round((completedInMonth / totalDaysInMonth) * 100);
-            
-            const monthlyStats = document.getElementById('monthly-stats');
-            monthlyStats.innerHTML = `
-                <div class="stats-header">${year}年${month + 1}月の実行状況</div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value">${completedInMonth}</div>
-                        <div class="stat-label">実行日数</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">${completionRate}%</div>
-                        <div class="stat-label">達成率</div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // 設定モーダルを開く
-        function openSettings() {
-            document.getElementById('settings-modal').style.display = 'flex';
-        }
-        
-        // 設定モーダルを閉じる
-        function closeSettings() {
-            document.getElementById('settings-modal').style.display = 'none';
-        }
-        
-        // データをエクスポート
-        function exportData() {
-            createBackup(true);
         }
         
         // データをインポート
         function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.tasks && Array.isArray(data.tasks)) {
-                        tasks = data.tasks;
-                        
-                        // バックアップ設定もインポート
-                        if (data.backupSettings) {
-                            backupSettings = { ...backupSettings, ...data.backupSettings };
-                            saveBackupSettings();
-                            loadBackupSettings();
+            try {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        if (data.tasks && Array.isArray(data.tasks)) {
+                            tasks = data.tasks;
+                            saveTasks();
+                            renderTasks();
+                            showToast('データをインポートしました');
+                            closeSettings();
+                            console.log('インポート完了:', tasks.length + '件');
+                        } else {
+                            throw new Error('不正なデータ形式');
                         }
-                        
-                        saveTasks();
-                        renderTasks();
-                        updateBackupStatus();
-                        showToast('データをインポートしました');
-                        closeSettings();
+                    } catch (parseError) {
+                        console.error('データ解析エラー:', parseError);
+                        showToast('ファイルの形式が正しくありません');
                     }
-                } catch (error) {
-                    showToast('インポートに失敗しました');
-                }
-            };
-            reader.readAsText(file);
-            
-            // ファイル選択をリセット
-            event.target.value = '';
+                };
+                reader.readAsText(file);
+                
+                // ファイル選択をリセット
+                event.target.value = '';
+            } catch (error) {
+                console.error('インポートエラー:', error);
+                showToast('インポートに失敗しました');
+            }
         }
         
         // トースト通知を表示
         function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
+            try {
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.textContent = message;
+                    toast.style.display = 'block';
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 3000);
+                }
+                console.log('トースト:', message);
+            } catch (error) {
+                console.error('トースト表示エラー:', error);
+            }
         }
         
         // Service Worker登録
@@ -1445,7 +1210,8 @@
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
-                document.getElementById('install-prompt').style.display = 'block';
+                const prompt = document.getElementById('install-prompt');
+                if (prompt) prompt.style.display = 'block';
             });
         }
         
@@ -1465,32 +1231,50 @@
         
         // インストール促進を閉じる
         function closeInstallPrompt() {
-            document.getElementById('install-prompt').style.display = 'none';
+            const prompt = document.getElementById('install-prompt');
+            if (prompt) prompt.style.display = 'none';
         }
         
         // キーボードショートカット
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const addTaskModal = document.getElementById('add-task-modal');
-                if (addTaskModal.style.display === 'flex') {
-                    addTask();
+            try {
+                if (e.key === 'Enter') {
+                    const addTaskModal = document.getElementById('add-task-modal');
+                    if (addTaskModal && addTaskModal.style.display === 'flex') {
+                        addTask();
+                    }
                 }
-            }
-            if (e.key === 'Escape') {
-                // ESCキーで全てのモーダルを閉じる
-                document.querySelectorAll('.modal').forEach(modal => {
-                    modal.style.display = 'none';
-                });
+                if (e.key === 'Escape') {
+                    // ESCキーで全てのモーダルを閉じる
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                }
+            } catch (error) {
+                console.error('キーボードイベントエラー:', error);
             }
         });
         
         // モーダル外クリックで閉じる
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
+                try {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('モーダルクリックイベントエラー:', error);
                 }
             });
+        });
+        
+        // ページ離脱前の確認（タスクがある場合）
+        window.addEventListener('beforeunload', function(e) {
+            if (tasks.length > 0) {
+                // 現代のブラウザでは独自メッセージは表示されない
+                e.preventDefault();
+                e.returnValue = '';
+            }
         });
     </script>
 </body>
