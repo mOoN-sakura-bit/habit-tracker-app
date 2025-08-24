@@ -1,0 +1,22 @@
+{
+  "name": "毎日タスクトラッカー",
+  "short_name": "タスクトラッカー", 
+  "description": "習慣化をサポートするアプリ",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%236366f1'/><text y='130' font-size='100' text-anchor='middle' x='96' fill='white'>🔥</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%236366f1'/><text y='350' font-size='280' text-anchor='middle' x='256' fill='white'>🔥</text></svg>",
+      "sizes": "512x512", 
+      "type": "image/svg+xml"
+    }
+  ]
+}
