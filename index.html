@@ -10,6 +10,7 @@
     <meta name="theme-color" content="#6366f1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <style>
         /* 基本スタイル */
@@ -45,35 +46,47 @@
         .task-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .task-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .task-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #333;
+            flex: 1;
+            margin-right: 8px;
+        }
+        
+        .task-buttons {
+            display: flex;
+            gap: 4px;
         }
         
         .streak-info {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            margin-bottom: 12px;
         }
         
         .streak-number {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #ff6b35;
+        }
+        
+        .streak-text {
+            font-size: 14px;
+            color: #666;
         }
         
         .complete-btn {
@@ -81,11 +94,12 @@
             background: #6366f1;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             transition: background 0.3s;
+            margin-bottom: 8px;
         }
         
         .complete-btn:hover {
@@ -95,6 +109,21 @@
         .complete-btn:disabled {
             background: #10b981;
             cursor: not-allowed;
+        }
+        
+        .history-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .history-btn:hover {
+            background: #4b5563;
         }
         
         .add-task-btn {
@@ -135,14 +164,22 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 20px;
         }
         
         .modal-content {
             background: white;
             padding: 20px;
             border-radius: 12px;
-            width: 90%;
-            max-width: 300px;
+            width: 100%;
+            max-width: 320px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .history-modal-content {
+            max-width: 400px;
+            max-height: 80vh;
         }
         
         .input-field {
@@ -205,6 +242,215 @@
             display: none;
             z-index: 1000;
         }
+        
+        .delete-btn, .icon-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .icon-btn:hover {
+            background: rgba(107, 114, 128, 0.1);
+        }
+        
+        /* カレンダースタイル */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+        
+        .calendar-nav-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            color: #6366f1;
+        }
+        
+        .calendar-nav-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .calendar-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .weekday {
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            padding: 8px 4px;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .calendar-day.other-month {
+            color: #d1d5db;
+        }
+        
+        .calendar-day.completed {
+            background: #10b981;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .calendar-day.today {
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-weight: bold;
+            border: 2px solid #3b82f6;
+        }
+        
+        .calendar-day.today.completed {
+            background: #059669;
+            color: white;
+            border: 2px solid #047857;
+        }
+        
+        .calendar-day:hover:not(.completed):not(.today) {
+            background: #f3f4f6;
+        }
+        
+        .stats-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .stats-header {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #6366f1;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        .legend-completed {
+            background: #10b981;
+        }
+        
+        .legend-today {
+            background: #3b82f6;
+        }
+        
+        .weekly-view {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            margin-bottom: 12px;
+        }
+        
+        .week-day {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .week-day.completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .week-day.today {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .week-day:not(.completed):not(.today) {
+            background: #e5e7eb;
+            color: #9ca3af;
+        }
     </style>
 </head>
 <body>
@@ -253,6 +499,93 @@
         </div>
     </div>
     
+    <!-- 削除確認モーダル -->
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h3>⚠️ 削除確認</h3>
+            <p>このタスクを削除しますか？</p>
+            <p><strong id="delete-task-name"></strong></p>
+            <p style="color: #ef4444; font-size: 14px;">この操作は取り消せません。</p>
+            <div style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeDeleteConfirm()">キャンセル</button>
+                <button class="btn" style="background: #ef4444; color: white;" onclick="confirmDelete()">削除する</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 履歴モーダル -->
+    <div id="history-modal" class="modal">
+        <div class="modal-content history-modal-content">
+            <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 20px;">
+                <h3 id="history-task-name">タスク履歴</h3>
+                <button onclick="closeHistory()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">×</button>
+            </div>
+            
+            <!-- 統計サマリー -->
+            <div class="stats-section">
+                <div class="stats-header">📊 統計情報</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-streak">0</div>
+                        <div class="stat-label">連続日数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-days">0</div>
+                        <div class="stat-label">累計日数</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 直近7日間 -->
+            <div style="margin: 20px 0;">
+                <h4 style="font-size: 14px; color: #666; margin-bottom: 8px; text-align: center;">直近7日間</h4>
+                <div class="weekly-view" id="weekly-view">
+                    <!-- 直近7日間が動的に生成される -->
+                </div>
+            </div>
+            
+            <!-- カレンダー -->
+            <div class="calendar-header">
+                <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+                <div class="calendar-title" id="calendar-title">2024年8月</div>
+                <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+            </div>
+            
+            <!-- 曜日ヘッダー -->
+            <div class="calendar-weekdays">
+                <div class="weekday">日</div>
+                <div class="weekday">月</div>
+                <div class="weekday">火</div>
+                <div class="weekday">水</div>
+                <div class="weekday">木</div>
+                <div class="weekday">金</div>
+                <div class="weekday">土</div>
+            </div>
+            
+            <!-- カレンダー本体 -->
+            <div class="calendar-days" id="calendar-days">
+                <!-- カレンダーが動的に生成される -->
+            </div>
+            
+            <!-- 凡例 -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-completed"></div>
+                    <span>実行済み</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-today"></div>
+                    <span>今日</span>
+                </div>
+            </div>
+            
+            <!-- 月間統計 -->
+            <div id="monthly-stats" class="stats-section">
+                <!-- 月間統計が動的に生成される -->
+            </div>
+        </div>
+    </div>
+    
     <!-- 設定モーダル -->
     <div id="settings-modal" class="modal">
         <div class="modal-content">
@@ -277,6 +610,9 @@
         // グローバル変数
         let tasks = [];
         let deferredPrompt;
+        let taskToDelete = null;
+        let currentHistoryTask = null;
+        let currentCalendarDate = new Date();
         
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
@@ -322,20 +658,64 @@
                 return `
                     <div class="task-card">
                         <div class="task-header">
-                            <div class="task-name">${task.name}</div>
-                            <button onclick="deleteTask(${task.id})" style="background: none; border: none; color: #ef4444; cursor: pointer;">🗑️</button>
+                            <div class="task-name">${escapeHtml(task.name)}</div>
+                            <div class="task-buttons">
+                                <button class="icon-btn" onclick="openHistory(${task.id})" title="履歴を表示">📊</button>
+                                <button class="delete-btn" onclick="openDeleteConfirm(${task.id}, '${escapeHtml(task.name)}')" title="削除">🗑️</button>
+                            </div>
                         </div>
+                        
+                        <div class="weekly-view">
+                            ${generateWeeklyView(task.completedDates)}
+                        </div>
+                        
                         <div class="streak-info">
-                            <div class="streak-number">${streak}</div>
-                            <div>日連続 (累計: ${task.completedDates.length}日)</div>
+                            <div>
+                                <span class="streak-number">🔥 ${streak}</span>
+                                <span class="streak-text">日連続</span>
+                            </div>
+                            <div class="streak-text">累計: ${task.completedDates.length}日</div>
                         </div>
+                        
                         <button class="complete-btn" onclick="completeTask(${task.id})" ${completedToday ? 'disabled' : ''}>
                             ${completedToday ? '✅ 今日は完了済み' : '今日のタスクを完了'}
                         </button>
-                        ${completedToday ? '<div style="text-align: center; margin-top: 10px; color: #10b981;">🎉 よくやった！</div>' : ''}
+                        
+                        ${completedToday ? '<div style="text-align: center; color: #10b981; font-size: 14px; margin-top: 8px;">🎉 よくやった！</div>' : ''}
                     </div>
                 `;
             }).join('');
+        }
+        
+        // 直近7日間の表示を生成
+        function generateWeeklyView(completedDates) {
+            const today = new Date();
+            const completedSet = new Set(completedDates);
+            let weeklyHtml = '';
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const day = date.getDate();
+                const isCompleted = completedSet.has(dateStr);
+                const isToday = i === 0;
+                
+                let className = 'week-day';
+                if (isCompleted) className += ' completed';
+                else if (isToday) className += ' today';
+                
+                weeklyHtml += `<div class="${className}">${day}</div>`;
+            }
+            
+            return weeklyHtml;
+        }
+        
+        // HTML エスケープ
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         // 連続日数を計算
@@ -414,20 +794,165 @@
                 if ('Notification' in window && Notification.permission === 'granted') {
                     new Notification('タスク完了！', {
                         body: `${task.name}を完了しました`,
-                        icon: '/icons/icon-192.png'
+                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%236366f1"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
                     });
                 }
             }
         }
         
+        // 削除確認モーダルを開く
+        function openDeleteConfirm(taskId, taskName) {
+            taskToDelete = taskId;
+            document.getElementById('delete-task-name').textContent = taskName;
+            document.getElementById('delete-confirm-modal').style.display = 'flex';
+        }
+        
+        // 削除確認モーダルを閉じる
+        function closeDeleteConfirm() {
+            taskToDelete = null;
+            document.getElementById('delete-confirm-modal').style.display = 'none';
+        }
+        
         // タスクを削除
-        function deleteTask(taskId) {
-            if (confirm('このタスクを削除しますか？')) {
-                tasks = tasks.filter(t => t.id !== taskId);
+        function confirmDelete() {
+            if (taskToDelete) {
+                tasks = tasks.filter(t => t.id !== taskToDelete);
                 saveTasks();
                 renderTasks();
                 showToast('タスクを削除しました');
+                closeDeleteConfirm();
             }
+        }
+        
+        // 履歴モーダルを開く
+        function openHistory(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            currentHistoryTask = task;
+            currentCalendarDate = new Date();
+            
+            document.getElementById('history-task-name').textContent = task.name;
+            document.getElementById('current-streak').textContent = calculateStreak(task.completedDates);
+            document.getElementById('total-days').textContent = task.completedDates.length;
+            
+            renderWeeklyView(task.completedDates);
+            renderCalendar(task.completedDates);
+            renderMonthlyStats(task.completedDates);
+            
+            document.getElementById('history-modal').style.display = 'flex';
+        }
+        
+        // 履歴モーダルを閉じる
+        function closeHistory() {
+            document.getElementById('history-modal').style.display = 'none';
+            currentHistoryTask = null;
+        }
+        
+        // 直近7日間の表示をレンダリング
+        function renderWeeklyView(completedDates) {
+            const weeklyView = document.getElementById('weekly-view');
+            const today = new Date();
+            const completedSet = new Set(completedDates);
+            let html = '';
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const day = date.getDate();
+                const isCompleted = completedSet.has(dateStr);
+                const isToday = i === 0;
+                
+                let className = 'week-day';
+                if (isCompleted) className += ' completed';
+                else if (isToday) className += ' today';
+                
+                html += `<div class="${className}">${day}</div>`;
+            }
+            
+            weeklyView.innerHTML = html;
+        }
+        
+        // カレンダーをレンダリング
+        function renderCalendar(completedDates) {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // タイトルを更新
+            document.getElementById('calendar-title').textContent = `${year}年${month + 1}月`;
+            
+            // カレンダーの日付を生成
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            const calendarDays = document.getElementById('calendar-days');
+            const completedSet = new Set(completedDates);
+            const today = new Date().toISOString().split('T')[0];
+            
+            let html = '';
+            
+            for (let i = 0; i < 42; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+                const dateStr = currentDate.toISOString().split('T')[0];
+                const day = currentDate.getDate();
+                const isCurrentMonth = currentDate.getMonth() === month;
+                const isCompleted = completedSet.has(dateStr);
+                const isToday = dateStr === today;
+                
+                let className = 'calendar-day';
+                if (!isCurrentMonth) className += ' other-month';
+                if (isCompleted) className += ' completed';
+                if (isToday) className += ' today';
+                
+                html += `<div class="${className}">${day}</div>`;
+            }
+            
+            calendarDays.innerHTML = html;
+        }
+        
+        // 月を変更
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar(currentHistoryTask.completedDates);
+            renderMonthlyStats(currentHistoryTask.completedDates);
+        }
+        
+        // 月間統計をレンダリング
+        function renderMonthlyStats(completedDates) {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // その月の日付を取得
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const totalDaysInMonth = lastDay.getDate();
+            
+            // その月の完了日数を計算
+            const completedInMonth = completedDates.filter(dateStr => {
+                const date = new Date(dateStr);
+                return date.getFullYear() === year && date.getMonth() === month;
+            }).length;
+            
+            const completionRate = Math.round((completedInMonth / totalDaysInMonth) * 100);
+            
+            const monthlyStats = document.getElementById('monthly-stats');
+            monthlyStats.innerHTML = `
+                <div class="stats-header">${year}年${month + 1}月の実行状況</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">${completedInMonth}</div>
+                        <div class="stat-label">実行日数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${completionRate}%</div>
+                        <div class="stat-label">達成率</div>
+                    </div>
+                </div>
+            `;
         }
         
         // 設定モーダルを開く
@@ -482,6 +1007,9 @@
                 }
             };
             reader.readAsText(file);
+            
+            // ファイル選択をリセット
+            event.target.value = '';
         }
         
         // トースト通知を表示
@@ -497,9 +1025,13 @@
         // Service Worker登録
         function registerServiceWorker() {
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(() => console.log('Service Worker登録完了'))
-                    .catch(error => console.log('Service Worker登録失敗:', error));
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker登録完了:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker登録失敗:', error);
+                    });
             }
         }
         
@@ -531,10 +1063,19 @@
             document.getElementById('install-prompt').style.display = 'none';
         }
         
-        // Enterキーでタスク追加
-        document.getElementById('task-name-input').addEventListener('keypress', function(e) {
+        // キーボードショートカット
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                addTask();
+                const addTaskModal = document.getElementById('add-task-modal');
+                if (addTaskModal.style.display === 'flex') {
+                    addTask();
+                }
+            }
+            if (e.key === 'Escape') {
+                // ESCキーで全てのモーダルを閉じる
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
             }
         });
         
