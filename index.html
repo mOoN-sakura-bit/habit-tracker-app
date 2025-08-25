@@ -595,6 +595,140 @@
             margin-top: 8px;
             font-size: 12px;
         }
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: none;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+        }
+        
+        .backup-reminder.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .backup-reminder.danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        
+        .backup-reminder-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .backup-reminder-text {
+            font-size: 12px;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+        
+        .backup-reminder-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+        
+        .backup-reminder-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .backup-info-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .backup-info-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .backup-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .backup-stat {
+            text-align: center;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .backup-stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #6366f1;
+            display: block;
+        }
+        
+        .backup-stat-label {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+        
+        .backup-settings {
+            margin-top: 12px;
+        }
+        
+        .backup-setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .backup-setting-label {
+            font-size: 13px;
+            color: #374151;
+        }
+        
+        .backup-setting-select {
+            padding: 4px 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 12px;
+            background: white;
+        }
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .install-prompt button {
+            background: white;
+            color: #10b981;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 12px;
+        }
         
         .toast {
             position: fixed;
@@ -637,6 +771,14 @@
             ホーム画面に追加してアプリのように使えます
             <button onclick="installApp()">ホーム画面に追加</button>
             <button onclick="closeInstallPrompt()" style="background: transparent; color: white; margin-left: 8px;">×</button>
+        </div>
+        
+        <!-- バックアップリマインダー -->
+        <div id="backup-reminder" class="backup-reminder">
+            <div class="backup-reminder-title" id="backup-reminder-title">💾 バックアップをお勧めします</div>
+            <div class="backup-reminder-text" id="backup-reminder-text">前回のエクスポートから7日経過しました</div>
+            <button class="backup-reminder-btn" onclick="quickExportData()">今すぐエクスポート</button>
+            <button class="backup-reminder-btn" onclick="dismissBackupReminder()">後で</button>
         </div>
         
         <!-- ヘッダー -->
@@ -807,6 +949,40 @@
                 <button class="modal-close" onclick="closeSettings()">×</button>
             </div>
             <div class="modal-body">
+                <!-- バックアップ状況 -->
+                <div class="backup-info-section">
+                    <div class="backup-info-title">
+                        📊 バックアップ状況
+                    </div>
+                    <div class="backup-stats">
+                        <div class="backup-stat">
+                            <span class="backup-stat-value" id="backup-status-days">-</span>
+                            <div class="backup-stat-label">前回から経過</div>
+                        </div>
+                        <div class="backup-stat">
+                            <span class="backup-stat-value" id="backup-safety-level">未実行</span>
+                            <div class="backup-stat-label">安全レベル</div>
+                        </div>
+                    </div>
+                    <div id="last-backup-date" style="font-size: 12px; color: #6b7280; text-align: center;">
+                        最終バックアップ: 未実行
+                    </div>
+                </div>
+                
+                <!-- リマインダー設定 -->
+                <div class="backup-settings">
+                    <div class="backup-setting-row">
+                        <span class="backup-setting-label">リマインダー頻度</span>
+                        <select id="backup-reminder-frequency" class="backup-setting-select" onchange="updateBackupReminderSettings()">
+                            <option value="off">無効</option>
+                            <option value="3">3日ごと</option>
+                            <option value="7">1週間ごと</option>
+                            <option value="14">2週間ごと</option>
+                            <option value="30">1ヶ月ごと</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div style="margin-bottom: 16px;">
                     <button class="btn btn-primary" onclick="exportData()" style="width: 100%; margin-bottom: 8px;">📤 データをエクスポート</button>
                     <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
@@ -831,6 +1007,11 @@
         let taskToDelete = null;
         let currentDetailTask = null;
         let currentCalendarDate = new Date();
+        let backupSettings = {
+            lastBackupDate: null,
+            reminderFrequency: 7, // デフォルト: 1週間
+            lastReminderDismiss: null
+        };
         
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
@@ -838,9 +1019,12 @@
             
             try {
                 loadTasks();
+                loadBackupSettings();
                 renderTasks();
                 registerServiceWorker();
                 checkInstallPrompt();
+                updateBackupStatus();
+                checkBackupReminder();
                 
                 // 通知許可の取得
                 if ('Notification' in window && Notification.permission === 'default') {
@@ -854,7 +1038,198 @@
             }
         });
         
-        // ローカルストレージからタスクを読み込み
+        // バックアップ設定を読み込み
+        function loadBackupSettings() {
+            try {
+                const stored = localStorage.getItem('habit-tracker-backup-settings');
+                if (stored) {
+                    backupSettings = { ...backupSettings, ...JSON.parse(stored) };
+                }
+                
+                // UI更新
+                const frequencySelect = document.getElementById('backup-reminder-frequency');
+                if (frequencySelect) {
+                    frequencySelect.value = backupSettings.reminderFrequency === 0 ? 'off' : backupSettings.reminderFrequency.toString();
+                }
+                
+                console.log('バックアップ設定読み込み完了');
+            } catch (error) {
+                console.error('バックアップ設定読み込みエラー:', error);
+            }
+        }
+        
+        // バックアップ設定を保存
+        function saveBackupSettings() {
+            try {
+                localStorage.setItem('habit-tracker-backup-settings', JSON.stringify(backupSettings));
+                console.log('バックアップ設定保存完了');
+            } catch (error) {
+                console.error('バックアップ設定保存エラー:', error);
+            }
+        }
+        
+        // バックアップ状況を更新
+        function updateBackupStatus() {
+            try {
+                const statusDaysElement = document.getElementById('backup-status-days');
+                const safetyLevelElement = document.getElementById('backup-safety-level');
+                const lastBackupElement = document.getElementById('last-backup-date');
+                
+                if (!statusDaysElement || !safetyLevelElement || !lastBackupElement) return;
+                
+                const now = new Date();
+                let daysSinceBackup = 0;
+                let safetyLevel = '未実行';
+                let safetyColor = '#6b7280';
+                let lastBackupText = '最終バックアップ: 未実行';
+                
+                if (backupSettings.lastBackupDate) {
+                    const lastBackup = new Date(backupSettings.lastBackupDate);
+                    daysSinceBackup = Math.floor((now - lastBackup) / (1000 * 60 * 60 * 24));
+                    
+                    if (daysSinceBackup === 0) {
+                        safetyLevel = '安全';
+                        safetyColor = '#10b981';
+                    } else if (daysSinceBackup <= 3) {
+                        safetyLevel = '良好';
+                        safetyColor = '#10b981';
+                    } else if (daysSinceBackup <= 7) {
+                        safetyLevel = '普通';
+                        safetyColor = '#f59e0b';
+                    } else if (daysSinceBackup <= 14) {
+                        safetyLevel = '注意';
+                        safetyColor = '#f59e0b';
+                    } else {
+                        safetyLevel = '危険';
+                        safetyColor = '#ef4444';
+                    }
+                    
+                    const backupDate = lastBackup.toLocaleDateString('ja-JP');
+                    const backupTime = lastBackup.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+                    lastBackupText = `最終バックアップ: ${backupDate} ${backupTime}`;
+                }
+                
+                statusDaysElement.textContent = daysSinceBackup === 0 ? '今日' : `${daysSinceBackup}日`;
+                safetyLevelElement.textContent = safetyLevel;
+                safetyLevelElement.style.color = safetyColor;
+                lastBackupElement.textContent = lastBackupText;
+                
+            } catch (error) {
+                console.error('バックアップ状況更新エラー:', error);
+            }
+        }
+        
+        // バックアップリマインダーをチェック
+        function checkBackupReminder() {
+            try {
+                if (backupSettings.reminderFrequency === 0 || backupSettings.reminderFrequency === 'off') {
+                    return; // リマインダー無効
+                }
+                
+                const now = new Date();
+                let shouldShowReminder = false;
+                let reminderClass = '';
+                let reminderTitle = '';
+                let reminderText = '';
+                let daysSinceBackup = 0;
+                
+                if (!backupSettings.lastBackupDate) {
+                    // 一度もバックアップしていない
+                    shouldShowReminder = true;
+                    reminderClass = 'warning';
+                    reminderTitle = '💾 初回バックアップをお勧めします';
+                    reminderText = 'データを保護するため、バックアップを作成しましょう';
+                } else {
+                    const lastBackup = new Date(backupSettings.lastBackupDate);
+                    daysSinceBackup = Math.floor((now - lastBackup) / (1000 * 60 * 60 * 24));
+                    const reminderFrequency = parseInt(backupSettings.reminderFrequency);
+                    
+                    if (daysSinceBackup >= reminderFrequency) {
+                        shouldShowReminder = true;
+                        
+                        if (daysSinceBackup >= 14) {
+                            reminderClass = 'danger';
+                            reminderTitle = '⚠️ 緊急：バックアップが必要です';
+                            reminderText = `前回のバックアップから${daysSinceBackup}日経過しています`;
+                        } else if (daysSinceBackup >= 7) {
+                            reminderClass = 'warning';
+                            reminderTitle = '💾 バックアップをお勧めします';
+                            reminderText = `前回のバックアップから${daysSinceBackup}日経過しました`;
+                        } else {
+                            reminderClass = '';
+                            reminderTitle = '💾 バックアップの時間です';
+                            reminderText = `定期バックアップ（${reminderFrequency}日ごと）のお時間です`;
+                        }
+                        
+                        // 最後にリマインダーを非表示にしてから1日は表示しない
+                        if (backupSettings.lastReminderDismiss) {
+                            const lastDismiss = new Date(backupSettings.lastReminderDismiss);
+                            const hoursSinceDismiss = Math.floor((now - lastDismiss) / (1000 * 60 * 60));
+                            if (hoursSinceDismiss < 24) {
+                                shouldShowReminder = false;
+                            }
+                        }
+                    }
+                }
+                
+                const reminderElement = document.getElementById('backup-reminder');
+                if (reminderElement && shouldShowReminder) {
+                    reminderElement.className = `backup-reminder ${reminderClass}`;
+                    document.getElementById('backup-reminder-title').textContent = reminderTitle;
+                    document.getElementById('backup-reminder-text').textContent = reminderText;
+                    reminderElement.style.display = 'block';
+                } else if (reminderElement) {
+                    reminderElement.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('リマインダーチェックエラー:', error);
+            }
+        }
+        
+        // リマインダー設定を更新
+        function updateBackupReminderSettings() {
+            try {
+                const frequencySelect = document.getElementById('backup-reminder-frequency');
+                if (!frequencySelect) return;
+                
+                const value = frequencySelect.value;
+                backupSettings.reminderFrequency = value === 'off' ? 0 : parseInt(value);
+                
+                saveBackupSettings();
+                checkBackupReminder();
+                
+                showToast('リマインダー設定を更新しました');
+            } catch (error) {
+                console.error('リマインダー設定更新エラー:', error);
+            }
+        }
+        
+        // クイックエクスポート（リマインダーから）
+        function quickExportData() {
+            try {
+                exportData();
+                dismissBackupReminder();
+            } catch (error) {
+                console.error('クイックエクスポートエラー:', error);
+            }
+        }
+        
+        // リマインダーを非表示
+        function dismissBackupReminder() {
+            try {
+                const reminderElement = document.getElementById('backup-reminder');
+                if (reminderElement) {
+                    reminderElement.style.display = 'none';
+                }
+                
+                // 非表示にした時刻を記録
+                backupSettings.lastReminderDismiss = new Date().toISOString();
+                saveBackupSettings();
+            } catch (error) {
+                console.error('リマインダー非表示エラー:', error);
+            }
+        }
         function loadTasks() {
             try {
                 const stored = localStorage.getItem('habit-tracker-tasks');
@@ -1384,7 +1759,10 @@
         function openSettings() {
             try {
                 const modal = document.getElementById('settings-modal');
-                if (modal) modal.style.display = 'flex';
+                if (modal) {
+                    updateBackupStatus();
+                    modal.style.display = 'flex';
+                }
             } catch (error) {
                 console.error('設定モーダルエラー:', error);
             }
@@ -1425,7 +1803,13 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                showToast('データをエクスポートしました');
+                // バックアップ日時を記録
+                backupSettings.lastBackupDate = new Date().toISOString();
+                saveBackupSettings();
+                updateBackupStatus();
+                checkBackupReminder();
+                
+                showToast('📤 データをエクスポートしました');
                 console.log('エクスポート完了:', fileName);
             } catch (error) {
                 console.error('エクスポートエラー:', error);
