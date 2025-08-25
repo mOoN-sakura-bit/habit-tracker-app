@@ -1496,7 +1496,7 @@
             }
         });
 
-        // タスクの開始日を取得する関数
+        // タスクの開始日を取得する関数（修正版：タイムゾーン統一）
         function getTaskStartDate(task) {
             try {
                 // 完了記録がある場合は最初の完了日を開始日とする
@@ -1507,14 +1507,21 @@
                 
                 // 完了記録がない場合は作成日を開始日とする
                 if (task.createdAt) {
-                    return task.createdAt.split('T')[0]; // ISO形式から日付部分のみ取得
+                    // ISO文字列の場合はローカル時間に変換
+                    if (task.createdAt.includes('T')) {
+                        const date = new Date(task.createdAt);
+                        return getDateString(date); // ローカル時間でYYYY-MM-DD形式に変換
+                    } else {
+                        // 既にYYYY-MM-DD形式の場合はそのまま使用
+                        return task.createdAt;
+                    }
                 }
                 
-                // どちらもない場合は今日を返す
-                return new Date().toISOString().split('T')[0];
+                // どちらもない場合は今日を返す（ローカル時間）
+                return getTodayString();
             } catch (error) {
                 console.error('開始日取得エラー:', error);
-                return new Date().toISOString().split('T')[0];
+                return getTodayString();
             }
         }
 
@@ -2595,7 +2602,7 @@ function renderDetailCalendar(completedDates) {
             }
         }
         
-        // タスクを追加
+        // タスクを追加（修正版：ローカル時間使用）
         function addTask() {
             try {
                 const taskNameInput = document.getElementById('task-name-input');
@@ -2610,12 +2617,19 @@ function renderDetailCalendar(completedDates) {
                     return;
                 }
                 
+                const today = getTodayString(); // ローカル時間の今日
                 const newTask = {
                     id: Date.now(),
                     name: taskName,
                     completedDates: [],
-                    createdAt: new Date().toISOString()
+                    createdAt: today // ローカル時間のYYYY-MM-DD形式で保存
                 };
+                
+                console.log('新規タスク作成:', {
+                    name: taskName,
+                    createdAt: today,
+                    localTime: new Date().toLocaleString()
+                });
                 
                 tasks.push(newTask);
                 saveTasks();
@@ -2623,7 +2637,7 @@ function renderDetailCalendar(completedDates) {
                 closeAddTaskModal();
                 showToast('タスクを追加しました');
                 
-                console.log('タスク追加完了:', taskName);
+                console.log('タスク追加完了:', taskName, '開始日:', today);
             } catch (error) {
                 console.error('タスク追加エラー:', error);
                 showToast('タスクの追加に失敗しました');
