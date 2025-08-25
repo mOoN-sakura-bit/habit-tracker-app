@@ -50,7 +50,7 @@
         
         /* コンパクトなタスクカード */
         .task-card-compact {
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 8px;
@@ -60,16 +60,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border: 1px solid #f3f4f6;
         }
         
         .task-card-compact:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #e5e7eb;
         }
         
         .task-card-compact.completed-today {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 4px solid #10b981;
+            background: white;
+            border: 1px solid #10b981;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+        }
+        
+        .task-card-compact.completed-today:hover {
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
         
         .task-info {
@@ -205,37 +212,71 @@
         
         /* 詳細画面用スタイル */
         .task-detail-header {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: white;
-            padding: 24px 20px;
-            margin: -20px -20px 20px -20px;
+            padding: 32px 24px 28px 24px;
+            margin: -20px -20px 24px -20px;
             border-radius: 12px 12px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .task-detail-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 0;
         }
         
         .task-detail-name {
             font-size: 20px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 20px;
+            padding: 0 4px;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: white;
         }
         
         .task-detail-stats {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
+            position: relative;
+            z-index: 1;
+            padding: 0 4px;
         }
         
         .task-stat {
             text-align: center;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            padding: 16px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
         .task-stat-value {
             font-size: 20px;
             font-weight: bold;
             display: block;
+            margin-bottom: 6px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         
         .task-stat-label {
-            font-size: 12px;
-            opacity: 0.9;
+            font-size: 11px;
+            opacity: 0.95;
+            line-height: 1.4;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         
         .complete-btn {
@@ -424,7 +465,49 @@
             margin-top: 4px;
         }
         
+        /* 編集セクション */
+        .edit-zone {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        
+        .edit-zone-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+        
+        .edit-zone-desc {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+        
         /* 危険ゾーン */
+        .danger-zone {
+            margin-top: 24px;
+            padding: 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+        }
+        
+        .danger-zone-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 8px;
+        }
+        
+        .danger-zone-desc {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
         .danger-zone {
             margin-top: 24px;
             padding: 16px;
@@ -601,16 +684,16 @@
     <div id="task-detail-modal" class="modal">
         <div class="modal-content">
             <div class="task-detail-header">
-                <button class="modal-close" onclick="closeTaskDetail()" style="position: absolute; top: 16px; right: 16px; color: white;">×</button>
+                <button class="modal-close" onclick="closeTaskDetail()" style="position: absolute; top: 24px; right: 28px; color: white; z-index: 2; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); background: rgba(255, 255, 255, 0.2); width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.3); display: flex; align-items: center; justify-content: center;">×</button>
                 <div class="task-detail-name" id="detail-task-name">タスク名</div>
                 <div class="task-detail-stats">
                     <div class="task-stat">
-                        <span class="task-stat-value" id="detail-streak">0</span>
-                        <span class="task-stat-label">連続日数</span>
+                        <span class="task-stat-value" id="detail-streak">🔥 0</span>
+                        <span class="task-stat-label">連続実行日数<br>(今日まで)</span>
                     </div>
                     <div class="task-stat">
-                        <span class="task-stat-value" id="detail-total">0</span>
-                        <span class="task-stat-label">累計日数</span>
+                        <span class="task-stat-value" id="detail-total">📊 0</span>
+                        <span class="task-stat-label">累計実行日数<br>(開始から)</span>
                     </div>
                 </div>
             </div>
@@ -660,11 +743,38 @@
                     <!-- 月間統計が動的に生成される -->
                 </div>
                 
+                <!-- 編集セクション -->
+                <div class="edit-zone">
+                    <div class="edit-zone-title">✏️ タスクの編集</div>
+                    <div class="edit-zone-desc">タスク名を変更できます。</div>
+                    <button class="btn btn-secondary" onclick="openEditTaskModal()">タスク名を編集</button>
+                </div>
+                
                 <!-- 危険ゾーン（削除） -->
                 <div class="danger-zone">
                     <div class="danger-zone-title">⚠️ 危険な操作</div>
                     <div class="danger-zone-desc">このタスクとすべての履歴データが完全に削除されます。この操作は取り消せません。</div>
                     <button class="btn btn-danger" onclick="confirmDeleteTask()">タスクを削除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- タスク編集モーダル -->
+    <div id="edit-task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ タスク名を編集</h3>
+                <button class="modal-close" onclick="closeEditTaskModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="edit-task-name-input" class="input-field" placeholder="新しいタスク名を入力" maxlength="30">
+                <div style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 6px; font-size: 13px; color: #6b7280;">
+                    💡 タスク名を変更しても、これまでの実行履歴はすべて保持されます。
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="saveEditedTaskName()">保存</button>
+                    <button class="btn btn-secondary" onclick="closeEditTaskModal()">キャンセル</button>
                 </div>
             </div>
         </div>
@@ -867,10 +977,13 @@
                 currentDetailTask = task;
                 currentCalendarDate = new Date();
                 
+                const streak = calculateStreak(task.completedDates || []);
+                const total = (task.completedDates || []).length;
+                
                 // 詳細情報を設定
                 document.getElementById('detail-task-name').textContent = task.name;
-                document.getElementById('detail-streak').textContent = calculateStreak(task.completedDates || []);
-                document.getElementById('detail-total').textContent = (task.completedDates || []).length;
+                document.getElementById('detail-streak').textContent = `🔥 ${streak}`;
+                document.getElementById('detail-total').textContent = `📊 ${total}`;
                 
                 // 完了ボタンの状態を更新
                 const completedToday = isCompletedToday(task);
@@ -917,8 +1030,22 @@
                     currentDetailTask.completedDates.push(today);
                     saveTasks();
                     
-                    // UI更新
-                    openTaskDetail(currentDetailTask.id); // 詳細画面を再更新
+                    // 統計値を再計算して更新
+                    const streak = calculateStreak(currentDetailTask.completedDates);
+                    const total = currentDetailTask.completedDates.length;
+                    
+                    document.getElementById('detail-streak').textContent = `🔥 ${streak}`;
+                    document.getElementById('detail-total').textContent = `📊 ${total}`;
+                    
+                    // 完了ボタンの状態を更新
+                    const completeBtn = document.getElementById('detail-complete-btn');
+                    completeBtn.textContent = '✅ 今日は完了済み';
+                    completeBtn.disabled = true;
+                    
+                    // その他の表示も更新
+                    renderDetailWeeklyView(currentDetailTask.completedDates);
+                    renderDetailCalendar(currentDetailTask.completedDates);
+                    renderDetailMonthlyStats(currentDetailTask.completedDates);
                     
                     showToast('🎉 タスクを完了しました！');
                     
@@ -1048,12 +1175,12 @@
                 if (monthlyStats) {
                     monthlyStats.innerHTML = `
                         <div class="monthly-stat">
-                            <span class="monthly-stat-value">${completedInMonth}</span>
-                            <div class="monthly-stat-label">実行日数</div>
+                            <span class="monthly-stat-value">${completedInMonth}日</span>
+                            <div class="monthly-stat-label">今月の実行日数</div>
                         </div>
                         <div class="monthly-stat">
                             <span class="monthly-stat-value">${completionRate}%</span>
-                            <div class="monthly-stat-label">達成率</div>
+                            <div class="monthly-stat-label">月間達成率<br><span style="font-size: 10px; color: #9ca3af;">(${completedInMonth}/${totalDaysInMonth}日)</span></div>
                         </div>
                     `;
                 }
@@ -1063,6 +1190,93 @@
         }
         
         // 詳細画面から削除確認
+        function confirmDeleteTask() {
+            try {
+                if (!currentDetailTask) return;
+                
+                taskToDelete = currentDetailTask.id;
+                document.getElementById('delete-task-name').textContent = currentDetailTask.name;
+                document.getElementById('delete-confirm-modal').style.display = 'flex';
+            } catch (error) {
+                console.error('削除確認エラー:', error);
+            }
+        }
+        function openEditTaskModal() {
+            try {
+                if (!currentDetailTask) return;
+                
+                const modal = document.getElementById('edit-task-modal');
+                const input = document.getElementById('edit-task-name-input');
+                
+                if (modal && input) {
+                    // 現在のタスク名を入力欄に設定
+                    input.value = currentDetailTask.name;
+                    modal.style.display = 'flex';
+                    input.focus();
+                    input.select(); // 全選択
+                }
+            } catch (error) {
+                console.error('編集モーダルエラー:', error);
+                showToast('編集画面を開けませんでした');
+            }
+        }
+        
+        // タスク編集モーダルを閉じる
+        function closeEditTaskModal() {
+            try {
+                const modal = document.getElementById('edit-task-modal');
+                const input = document.getElementById('edit-task-name-input');
+                
+                if (modal) modal.style.display = 'none';
+                if (input) input.value = '';
+            } catch (error) {
+                console.error('編集モーダル閉じるエラー:', error);
+            }
+        }
+        
+        // 編集されたタスク名を保存
+        function saveEditedTaskName() {
+            try {
+                if (!currentDetailTask) return;
+                
+                const input = document.getElementById('edit-task-name-input');
+                if (!input) return;
+                
+                const newTaskName = input.value.trim();
+                if (!newTaskName) {
+                    showToast('タスク名を入力してください');
+                    return;
+                }
+                
+                if (newTaskName === currentDetailTask.name) {
+                    closeEditTaskModal();
+                    return;
+                }
+                
+                // タスク名を更新
+                const oldName = currentDetailTask.name;
+                currentDetailTask.name = newTaskName;
+                
+                // データを保存
+                const taskIndex = tasks.findIndex(t => t.id === currentDetailTask.id);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex] = currentDetailTask;
+                    saveTasks();
+                    
+                    // UI更新
+                    document.getElementById('detail-task-name').textContent = newTaskName;
+                    renderTasks(); // メインリストも更新
+                    
+                    closeEditTaskModal();
+                    showToast('✏️ タスク名を更新しました');
+                    
+                    console.log('タスク名更新:', oldName, '→', newTaskName);
+                }
+            } catch (error) {
+                console.error('タスク名保存エラー:', error);
+                showToast('タスク名の保存に失敗しました');
+            }
+        }
         function confirmDeleteTask() {
             try {
                 if (!currentDetailTask) return;
@@ -1319,8 +1533,12 @@
             try {
                 if (e.key === 'Enter') {
                     const addTaskModal = document.getElementById('add-task-modal');
+                    const editTaskModal = document.getElementById('edit-task-modal');
+                    
                     if (addTaskModal && addTaskModal.style.display === 'flex') {
                         addTask();
+                    } else if (editTaskModal && editTaskModal.style.display === 'flex') {
+                        saveEditedTaskName();
                     }
                 }
                 if (e.key === 'Escape') {
