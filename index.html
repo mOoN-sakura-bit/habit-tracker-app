@@ -35,95 +35,89 @@
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
         
         .header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        .task-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .task-name {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            flex: 1;
-            margin-right: 8px;
-        }
-        
-        .task-buttons {
-            display: flex;
-            gap: 4px;
-        }
-        
-        .streak-info {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        
-        .streak-number {
-            font-size: 20px;
-            font-weight: bold;
-            color: #ff6b35;
-        }
-        
-        .streak-text {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .complete-btn {
-            width: 100%;
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s;
+            font-size: 22px;
             margin-bottom: 8px;
         }
         
-        .complete-btn:hover {
-            background: #5856eb;
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
         }
         
-        .complete-btn:disabled {
-            background: #10b981;
-            cursor: not-allowed;
-        }
-        
-        .history-btn, .icon-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 6px 8px;
-            border-radius: 6px;
-            font-size: 12px;
+        /* コンパクトなタスクカード */
+        .task-card-compact {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         
-        .history-btn:hover, .icon-btn:hover {
-            background: #4b5563;
+        .task-card-compact:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .task-card-compact.completed-today {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+        }
+        
+        .task-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .task-name-compact {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            flex: 1;
+        }
+        
+        .streak-compact {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .streak-number-compact {
+            font-weight: bold;
+            color: #f59e0b;
+        }
+        
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .status-completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .status-pending {
+            background: #e5e7eb;
+            color: #9ca3af;
         }
         
         .add-task-btn {
@@ -169,95 +163,146 @@
         
         .modal-content {
             background: white;
-            padding: 20px;
             border-radius: 12px;
             width: 100%;
-            max-width: 320px;
+            max-width: 360px;
             max-height: 90vh;
             overflow-y: auto;
+            position: relative;
         }
         
-        .history-modal-content {
-            max-width: 400px;
-            max-height: 80vh;
+        .modal-header {
+            padding: 20px 20px 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
         
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 15px;
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #374151;
+            flex: 1;
         }
         
-        .btn {
-            padding: 10px 16px;
+        .modal-close {
+            background: none;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            font-size: 24px;
+            color: #9ca3af;
             cursor: pointer;
-            margin-right: 10px;
-            margin-bottom: 5px;
+            padding: 4px;
         }
         
-        .btn-primary {
-            background: #6366f1;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #e5e7eb;
+        .modal-close:hover {
             color: #374151;
         }
         
-        .install-prompt {
-            background: rgba(16, 185, 129, 0.9);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: none;
+        .modal-body {
+            padding: 0 20px 20px 20px;
         }
         
-        .install-prompt button {
-            background: white;
-            color: #10b981;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+        /* 詳細画面用スタイル */
+        .task-detail-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 24px 20px;
+            margin: -20px -20px 20px -20px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .task-detail-name {
+            font-size: 20px;
             font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
+            margin-bottom: 8px;
         }
         
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            display: none;
-            z-index: 1000;
-            max-width: 90%;
+        .task-detail-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .task-stat {
             text-align: center;
         }
         
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            font-size: 12px;
+        .task-stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
         }
         
-        .delete-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
+        .task-stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .complete-btn {
+            width: 100%;
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .complete-btn:hover {
+            background: #5856eb;
+        }
+        
+        .complete-btn:disabled {
+            background: #10b981;
+            cursor: not-allowed;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .weekly-view {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .week-day {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .week-day.completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .week-day.today {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .week-day:not(.completed):not(.today) {
+            background: #f3f4f6;
+            color: #9ca3af;
         }
         
         /* カレンダースタイル */
@@ -265,14 +310,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding: 0 10px;
+            margin-bottom: 16px;
+            padding: 0 8px;
         }
         
         .calendar-nav-btn {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
             padding: 8px;
             border-radius: 50%;
@@ -284,23 +329,23 @@
         }
         
         .calendar-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
         }
         
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
+            gap: 2px;
             margin-bottom: 8px;
         }
         
         .weekday {
             text-align: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: #666;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
             padding: 8px 4px;
         }
         
@@ -308,7 +353,7 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         
         .calendar-day {
@@ -316,8 +361,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            border-radius: 6px;
+            font-size: 12px;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -336,119 +381,168 @@
             background: #dbeafe;
             color: #1d4ed8;
             font-weight: bold;
-            border: 2px solid #3b82f6;
+            border: 1px solid #3b82f6;
         }
         
         .calendar-day.today.completed {
             background: #059669;
             color: white;
-            border: 2px solid #047857;
+            border: 1px solid #047857;
         }
         
         .calendar-day:hover:not(.completed):not(.today) {
             background: #f3f4f6;
         }
         
-        .stats-section {
+        .monthly-stats {
             background: #f8fafc;
             padding: 16px;
             border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .stats-header {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        
-        .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 16px;
             text-align: center;
         }
         
-        .stat-item {
+        .monthly-stat {
             background: white;
             padding: 12px;
             border-radius: 6px;
             border: 1px solid #e5e7eb;
         }
         
-        .stat-value {
-            font-size: 20px;
+        .monthly-stat-value {
+            font-size: 18px;
             font-weight: bold;
             color: #6366f1;
+            display: block;
         }
         
-        .stat-label {
-            font-size: 12px;
-            color: #666;
+        .monthly-stat-label {
+            font-size: 11px;
+            color: #6b7280;
             margin-top: 4px;
         }
         
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 16px;
+        /* 危険ゾーン */
+        .danger-zone {
+            margin-top: 24px;
+            padding: 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+        }
+        
+        .danger-zone-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 8px;
+        }
+        
+        .danger-zone-desc {
             font-size: 12px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-        }
-        
-        .legend-completed {
-            background: #10b981;
-        }
-        
-        .legend-today {
-            background: #3b82f6;
-        }
-        
-        .weekly-view {
-            display: flex;
-            justify-content: center;
-            gap: 2px;
+            color: #6b7280;
             margin-bottom: 12px;
         }
         
-        .week-day {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
         }
         
-        .week-day.completed {
-            background: #10b981;
+        .btn-primary {
+            background: #6366f1;
             color: white;
         }
         
-        .week-day.today {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .week-day:not(.completed):not(.today) {
+        .btn-secondary {
             background: #e5e7eb;
-            color: #9ca3af;
+            color: #374151;
+        }
+        
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .install-prompt {
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .install-prompt button {
+            background: white;
+            color: #10b981;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+            max-width: 90%;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+            opacity: 0.9;
         }
     </style>
 </head>
@@ -459,7 +553,7 @@
             <strong>📱 アプリとして使用できます！</strong><br>
             ホーム画面に追加してアプリのように使えます
             <button onclick="installApp()">ホーム画面に追加</button>
-            <button onclick="closeInstallPrompt()" style="background: transparent; color: white;">×</button>
+            <button onclick="closeInstallPrompt()" style="background: transparent; color: white; margin-left: 8px;">×</button>
         </div>
         
         <!-- ヘッダー -->
@@ -471,13 +565,13 @@
         <!-- 設定ボタン -->
         <button class="settings-btn" onclick="openSettings()">⚙️</button>
         
-        <!-- タスクリスト -->
+        <!-- コンパクトタスクリスト -->
         <div id="task-list">
-            <!-- ここにタスクが動的に追加されます -->
+            <!-- ここにコンパクトなタスクカードが動的に追加されます -->
         </div>
         
         <!-- 空の状態 -->
-        <div id="empty-state" class="task-card" style="text-align: center; color: #666;">
+        <div id="empty-state" class="empty-state">
             <h3>📝 タスクがありません</h3>
             <p>「+」ボタンでタスクを追加しましょう</p>
         </div>
@@ -489,98 +583,108 @@
     <!-- タスク追加モーダル -->
     <div id="add-task-modal" class="modal">
         <div class="modal-content">
-            <h3>新しいタスクを追加</h3>
-            <input type="text" id="task-name-input" class="input-field" placeholder="タスク名を入力" maxlength="50">
-            <div>
-                <button class="btn btn-primary" onclick="addTask()">追加</button>
-                <button class="btn btn-secondary" onclick="closeAddTaskModal()">キャンセル</button>
+            <div class="modal-header">
+                <h3 class="modal-title">新しいタスクを追加</h3>
+                <button class="modal-close" onclick="closeAddTaskModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="task-name-input" class="input-field" placeholder="タスク名を入力" maxlength="30">
+                <div>
+                    <button class="btn btn-primary" onclick="addTask()">追加</button>
+                    <button class="btn btn-secondary" onclick="closeAddTaskModal()">キャンセル</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- タスク詳細モーダル -->
+    <div id="task-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="task-detail-header">
+                <button class="modal-close" onclick="closeTaskDetail()" style="position: absolute; top: 16px; right: 16px; color: white;">×</button>
+                <div class="task-detail-name" id="detail-task-name">タスク名</div>
+                <div class="task-detail-stats">
+                    <div class="task-stat">
+                        <span class="task-stat-value" id="detail-streak">0</span>
+                        <span class="task-stat-label">連続日数</span>
+                    </div>
+                    <div class="task-stat">
+                        <span class="task-stat-value" id="detail-total">0</span>
+                        <span class="task-stat-label">累計日数</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <!-- 今日の完了ボタン -->
+                <button class="complete-btn" id="detail-complete-btn" onclick="completeTaskFromDetail()">
+                    今日のタスクを完了
+                </button>
+                
+                <!-- 直近7日間 -->
+                <div class="section-title">
+                    📅 直近7日間
+                </div>
+                <div class="weekly-view" id="detail-weekly-view">
+                    <!-- 直近7日間が動的に生成される -->
+                </div>
+                
+                <!-- カレンダー -->
+                <div class="section-title">
+                    📊 実行履歴
+                </div>
+                <div class="calendar-header">
+                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+                    <div class="calendar-title" id="calendar-title">2024年8月</div>
+                    <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+                </div>
+                
+                <!-- 曜日ヘッダー -->
+                <div class="calendar-weekdays">
+                    <div class="weekday">日</div>
+                    <div class="weekday">月</div>
+                    <div class="weekday">火</div>
+                    <div class="weekday">水</div>
+                    <div class="weekday">木</div>
+                    <div class="weekday">金</div>
+                    <div class="weekday">土</div>
+                </div>
+                
+                <!-- カレンダー本体 -->
+                <div class="calendar-days" id="calendar-days">
+                    <!-- カレンダーが動的に生成される -->
+                </div>
+                
+                <!-- 月間統計 -->
+                <div id="monthly-stats" class="monthly-stats">
+                    <!-- 月間統計が動的に生成される -->
+                </div>
+                
+                <!-- 危険ゾーン（削除） -->
+                <div class="danger-zone">
+                    <div class="danger-zone-title">⚠️ 危険な操作</div>
+                    <div class="danger-zone-desc">このタスクとすべての履歴データが完全に削除されます。この操作は取り消せません。</div>
+                    <button class="btn btn-danger" onclick="confirmDeleteTask()">タスクを削除</button>
+                </div>
             </div>
         </div>
     </div>
     
     <!-- 削除確認モーダル -->
     <div id="delete-confirm-modal" class="modal">
-        <div class="modal-content" style="text-align: center;">
-            <h3>⚠️ 削除確認</h3>
-            <p>このタスクを削除しますか？</p>
-            <p><strong id="delete-task-name"></strong></p>
-            <p style="color: #ef4444; font-size: 14px;">この操作は取り消せません。</p>
-            <div style="margin-top: 20px;">
-                <button class="btn btn-secondary" onclick="closeDeleteConfirm()">キャンセル</button>
-                <button class="btn" style="background: #ef4444; color: white;" onclick="confirmDelete()">削除する</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">⚠️ タスクを削除</h3>
+                <button class="modal-close" onclick="closeDeleteConfirm()">×</button>
             </div>
-        </div>
-    </div>
-    
-    <!-- 履歴モーダル -->
-    <div id="history-modal" class="modal">
-        <div class="modal-content history-modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 id="history-task-name">タスク履歴</h3>
-                <button onclick="closeHistory()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">×</button>
-            </div>
-            
-            <!-- 統計サマリー -->
-            <div class="stats-section">
-                <div class="stats-header">📊 統計情報</div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-streak">0</div>
-                        <div class="stat-label">連続日数</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="total-days">0</div>
-                        <div class="stat-label">累計日数</div>
-                    </div>
+            <div class="modal-body" style="text-align: center;">
+                <p>本当にこのタスクを削除しますか？</p>
+                <p style="font-weight: bold; margin: 16px 0;"><span id="delete-task-name"></span></p>
+                <p style="color: #dc2626; font-size: 14px; margin-bottom: 20px;">すべての実行履歴も削除され、この操作は取り消せません。</p>
+                <div>
+                    <button class="btn btn-secondary" onclick="closeDeleteConfirm()">キャンセル</button>
+                    <button class="btn btn-danger" onclick="confirmDelete()">削除する</button>
                 </div>
-            </div>
-            
-            <!-- 直近7日間 -->
-            <div style="margin: 20px 0;">
-                <h4 style="font-size: 14px; color: #666; margin-bottom: 8px; text-align: center;">直近7日間</h4>
-                <div class="weekly-view" id="weekly-view">
-                    <!-- 直近7日間が動的に生成される -->
-                </div>
-            </div>
-            
-            <!-- カレンダー -->
-            <div class="calendar-header">
-                <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
-                <div class="calendar-title" id="calendar-title">2024年8月</div>
-                <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
-            </div>
-            
-            <!-- 曜日ヘッダー -->
-            <div class="calendar-weekdays">
-                <div class="weekday">日</div>
-                <div class="weekday">月</div>
-                <div class="weekday">火</div>
-                <div class="weekday">水</div>
-                <div class="weekday">木</div>
-                <div class="weekday">金</div>
-                <div class="weekday">土</div>
-            </div>
-            
-            <!-- カレンダー本体 -->
-            <div class="calendar-days" id="calendar-days">
-                <!-- カレンダーが動的に生成される -->
-            </div>
-            
-            <!-- 凡例 -->
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color legend-completed"></div>
-                    <span>実行済み</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color legend-today"></div>
-                    <span>今日</span>
-                </div>
-            </div>
-            
-            <!-- 月間統計 -->
-            <div id="monthly-stats" class="stats-section">
-                <!-- 月間統計が動的に生成される -->
             </div>
         </div>
     </div>
@@ -588,21 +692,21 @@
     <!-- 設定モーダル -->
     <div id="settings-modal" class="modal">
         <div class="modal-content">
-            <h3>⚙️ 設定</h3>
-            
-            <div style="margin-bottom: 15px;">
-                <button class="btn btn-primary" onclick="exportData()" style="width: 100%; margin-bottom: 10px;">📤 データをエクスポート</button>
-                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
-                <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()" style="width: 100%;">📥 データをインポート</button>
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ 設定</h3>
+                <button class="modal-close" onclick="closeSettings()">×</button>
             </div>
-            
-            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 12px; color: #6b7280; margin-bottom: 15px;">
-                <strong>💡 バックアップのすすめ</strong><br>
-                定期的にデータをエクスポートして、安全な場所（GoogleDriveなど）に保存することをお勧めします。
-            </div>
-            
-            <div style="margin-top: 20px; text-align: center;">
-                <button class="btn btn-secondary" onclick="closeSettings()">閉じる</button>
+            <div class="modal-body">
+                <div style="margin-bottom: 16px;">
+                    <button class="btn btn-primary" onclick="exportData()" style="width: 100%; margin-bottom: 8px;">📤 データをエクスポート</button>
+                    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+                    <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()" style="width: 100%;">📥 データをインポート</button>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; font-size: 13px; color: #6b7280; margin-bottom: 16px;">
+                    <strong>💡 バックアップのすすめ</strong><br>
+                    定期的にデータをエクスポートして、安全な場所（GoogleDriveなど）に保存することをお勧めします。
+                </div>
             </div>
         </div>
     </div>
@@ -615,7 +719,7 @@
         let tasks = [];
         let deferredPrompt;
         let taskToDelete = null;
-        let currentHistoryTask = null;
+        let currentDetailTask = null;
         let currentCalendarDate = new Date();
         
         // ページ読み込み時の初期化
@@ -664,7 +768,7 @@
             }
         }
         
-        // タスクを画面に表示
+        // タスクを画面に表示（コンパクト版）
         function renderTasks() {
             try {
                 const taskList = document.getElementById('task-list');
@@ -688,32 +792,16 @@
                     const completedToday = isCompletedToday(task);
                     
                     return `
-                        <div class="task-card">
-                            <div class="task-header">
-                                <div class="task-name">${escapeHtml(task.name || '')}</div>
-                                <div class="task-buttons">
-                                    <button class="icon-btn" onclick="openHistory(${task.id})" title="履歴を表示">📊</button>
-                                    <button class="delete-btn" onclick="openDeleteConfirm(${task.id}, '${escapeHtml(task.name || '')}')" title="削除">🗑️</button>
+                        <div class="task-card-compact ${completedToday ? 'completed-today' : ''}" onclick="openTaskDetail(${task.id})">
+                            <div class="task-info">
+                                <div class="task-name-compact">${escapeHtml(task.name || '')}</div>
+                                <div class="streak-compact">
+                                    🔥 <span class="streak-number-compact">${streak}</span>
                                 </div>
                             </div>
-                            
-                            <div class="weekly-view">
-                                ${generateWeeklyView(task.completedDates || [])}
+                            <div class="status-indicator ${completedToday ? 'status-completed' : 'status-pending'}">
+                                ${completedToday ? '✓' : streak}
                             </div>
-                            
-                            <div class="streak-info">
-                                <div>
-                                    <span class="streak-number">🔥 ${streak}</span>
-                                    <span class="streak-text">日連続</span>
-                                </div>
-                                <div class="streak-text">累計: ${(task.completedDates || []).length}日</div>
-                            </div>
-                            
-                            <button class="complete-btn" onclick="completeTask(${task.id})" ${completedToday ? 'disabled' : ''}>
-                                ${completedToday ? '✅ 今日は完了済み' : '今日のタスクを完了'}
-                            </button>
-                            
-                            ${completedToday ? '<div style="text-align: center; color: #10b981; font-size: 14px; margin-top: 8px;">🎉 よくやった！</div>' : ''}
                         </div>
                     `;
                 }).join('');
@@ -722,35 +810,6 @@
             } catch (error) {
                 console.error('タスク表示エラー:', error);
                 showToast('タスクの表示中にエラーが発生しました');
-            }
-        }
-        
-        // 直近7日間の表示を生成
-        function generateWeeklyView(completedDates) {
-            try {
-                const today = new Date();
-                const completedSet = new Set(completedDates || []);
-                let weeklyHtml = '';
-                
-                for (let i = 6; i >= 0; i--) {
-                    const date = new Date(today);
-                    date.setDate(date.getDate() - i);
-                    const dateStr = date.toISOString().split('T')[0];
-                    const day = date.getDate();
-                    const isCompleted = completedSet.has(dateStr);
-                    const isToday = i === 0;
-                    
-                    let className = 'week-day';
-                    if (isCompleted) className += ' completed';
-                    else if (isToday) className += ' today';
-                    
-                    weeklyHtml += `<div class="${className}">${day}</div>`;
-                }
-                
-                return weeklyHtml;
-            } catch (error) {
-                console.error('週表示生成エラー:', error);
-                return '';
             }
         }
         
@@ -796,6 +855,250 @@
             } catch (error) {
                 console.error('完了チェックエラー:', error);
                 return false;
+            }
+        }
+        
+        // タスク詳細画面を開く
+        function openTaskDetail(taskId) {
+            try {
+                const task = tasks.find(t => t.id === taskId);
+                if (!task) return;
+                
+                currentDetailTask = task;
+                currentCalendarDate = new Date();
+                
+                // 詳細情報を設定
+                document.getElementById('detail-task-name').textContent = task.name;
+                document.getElementById('detail-streak').textContent = calculateStreak(task.completedDates || []);
+                document.getElementById('detail-total').textContent = (task.completedDates || []).length;
+                
+                // 完了ボタンの状態を更新
+                const completedToday = isCompletedToday(task);
+                const completeBtn = document.getElementById('detail-complete-btn');
+                if (completedToday) {
+                    completeBtn.textContent = '✅ 今日は完了済み';
+                    completeBtn.disabled = true;
+                } else {
+                    completeBtn.textContent = '今日のタスクを完了';
+                    completeBtn.disabled = false;
+                }
+                
+                // 各種表示を更新
+                renderDetailWeeklyView(task.completedDates || []);
+                renderDetailCalendar(task.completedDates || []);
+                renderDetailMonthlyStats(task.completedDates || []);
+                
+                document.getElementById('task-detail-modal').style.display = 'flex';
+            } catch (error) {
+                console.error('詳細画面エラー:', error);
+                showToast('詳細画面の表示に失敗しました');
+            }
+        }
+        
+        // タスク詳細画面を閉じる
+        function closeTaskDetail() {
+            try {
+                document.getElementById('task-detail-modal').style.display = 'none';
+                currentDetailTask = null;
+                renderTasks(); // メインリストを更新
+            } catch (error) {
+                console.error('詳細画面閉じるエラー:', error);
+            }
+        }
+        
+        // 詳細画面から完了
+        function completeTaskFromDetail() {
+            try {
+                if (!currentDetailTask) return;
+                
+                const today = new Date().toISOString().split('T')[0];
+                if (!(currentDetailTask.completedDates || []).includes(today)) {
+                    if (!currentDetailTask.completedDates) currentDetailTask.completedDates = [];
+                    currentDetailTask.completedDates.push(today);
+                    saveTasks();
+                    
+                    // UI更新
+                    openTaskDetail(currentDetailTask.id); // 詳細画面を再更新
+                    
+                    showToast('🎉 タスクを完了しました！');
+                    
+                    // 通知を表示
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('タスク完了！', {
+                            body: `${currentDetailTask.name}を完了しました`,
+                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%236366f1"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('完了処理エラー:', error);
+                showToast('タスクの完了処理に失敗しました');
+            }
+        }
+        
+        // 詳細画面用の直近7日間表示
+        function renderDetailWeeklyView(completedDates) {
+            try {
+                const weeklyView = document.getElementById('detail-weekly-view');
+                if (!weeklyView) return;
+                
+                const today = new Date();
+                const completedSet = new Set(completedDates || []);
+                let html = '';
+                
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const day = date.getDate();
+                    const isCompleted = completedSet.has(dateStr);
+                    const isToday = i === 0;
+                    
+                    let className = 'week-day';
+                    if (isCompleted) className += ' completed';
+                    else if (isToday) className += ' today';
+                    
+                    html += `<div class="${className}">${day}</div>`;
+                }
+                
+                weeklyView.innerHTML = html;
+            } catch (error) {
+                console.error('週表示レンダリングエラー:', error);
+            }
+        }
+        
+        // 詳細画面用のカレンダー表示
+        function renderDetailCalendar(completedDates) {
+            try {
+                const year = currentCalendarDate.getFullYear();
+                const month = currentCalendarDate.getMonth();
+                
+                // タイトルを更新
+                const titleElement = document.getElementById('calendar-title');
+                if (titleElement) {
+                    titleElement.textContent = `${year}年${month + 1}月`;
+                }
+                
+                // カレンダーの日付を生成
+                const firstDay = new Date(year, month, 1);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                const calendarDays = document.getElementById('calendar-days');
+                if (!calendarDays) return;
+                
+                const completedSet = new Set(completedDates || []);
+                const today = new Date().toISOString().split('T')[0];
+                
+                let html = '';
+                
+                for (let i = 0; i < 42; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+                    const dateStr = currentDate.toISOString().split('T')[0];
+                    const day = currentDate.getDate();
+                    const isCurrentMonth = currentDate.getMonth() === month;
+                    const isCompleted = completedSet.has(dateStr);
+                    const isToday = dateStr === today;
+                    
+                    let className = 'calendar-day';
+                    if (!isCurrentMonth) className += ' other-month';
+                    if (isCompleted) className += ' completed';
+                    if (isToday) className += ' today';
+                    
+                    html += `<div class="${className}">${day}</div>`;
+                }
+                
+                calendarDays.innerHTML = html;
+            } catch (error) {
+                console.error('カレンダーレンダリングエラー:', error);
+            }
+        }
+        
+        // 月を変更
+        function changeMonth(direction) {
+            try {
+                if (!currentDetailTask) return;
+                
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+                renderDetailCalendar(currentDetailTask.completedDates || []);
+                renderDetailMonthlyStats(currentDetailTask.completedDates || []);
+            } catch (error) {
+                console.error('月変更エラー:', error);
+            }
+        }
+        
+        // 詳細画面用の月間統計
+        function renderDetailMonthlyStats(completedDates) {
+            try {
+                const year = currentCalendarDate.getFullYear();
+                const month = currentCalendarDate.getMonth();
+                
+                const lastDay = new Date(year, month + 1, 0);
+                const totalDaysInMonth = lastDay.getDate();
+                
+                const completedInMonth = (completedDates || []).filter(dateStr => {
+                    const date = new Date(dateStr);
+                    return date.getFullYear() === year && date.getMonth() === month;
+                }).length;
+                
+                const completionRate = Math.round((completedInMonth / totalDaysInMonth) * 100);
+                
+                const monthlyStats = document.getElementById('monthly-stats');
+                if (monthlyStats) {
+                    monthlyStats.innerHTML = `
+                        <div class="monthly-stat">
+                            <span class="monthly-stat-value">${completedInMonth}</span>
+                            <div class="monthly-stat-label">実行日数</div>
+                        </div>
+                        <div class="monthly-stat">
+                            <span class="monthly-stat-value">${completionRate}%</span>
+                            <div class="monthly-stat-label">達成率</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('月間統計エラー:', error);
+            }
+        }
+        
+        // 詳細画面から削除確認
+        function confirmDeleteTask() {
+            try {
+                if (!currentDetailTask) return;
+                
+                taskToDelete = currentDetailTask.id;
+                document.getElementById('delete-task-name').textContent = currentDetailTask.name;
+                document.getElementById('delete-confirm-modal').style.display = 'flex';
+            } catch (error) {
+                console.error('削除確認エラー:', error);
+            }
+        }
+        
+        // 削除確認を閉じる
+        function closeDeleteConfirm() {
+            try {
+                taskToDelete = null;
+                document.getElementById('delete-confirm-modal').style.display = 'none';
+            } catch (error) {
+                console.error('削除確認閉じるエラー:', error);
+            }
+        }
+        
+        // タスクを削除
+        function confirmDelete() {
+            try {
+                if (taskToDelete) {
+                    tasks = tasks.filter(t => t.id !== taskToDelete);
+                    saveTasks();
+                    renderTasks();
+                    showToast('タスクを削除しました');
+                    closeDeleteConfirm();
+                    closeTaskDetail();
+                }
+            } catch (error) {
+                console.error('タスク削除エラー:', error);
+                showToast('タスクの削除に失敗しました');
             }
         }
         
@@ -863,230 +1166,6 @@
             }
         }
         
-        // タスクを完了
-        function completeTask(taskId) {
-            try {
-                const task = tasks.find(t => t.id === taskId);
-                if (!task) {
-                    console.error('タスクが見つかりません:', taskId);
-                    return;
-                }
-                
-                const today = new Date().toISOString().split('T')[0];
-                if (!(task.completedDates || []).includes(today)) {
-                    if (!task.completedDates) task.completedDates = [];
-                    task.completedDates.push(today);
-                    saveTasks();
-                    renderTasks();
-                    showToast('🎉 タスクを完了しました！');
-                    
-                    // 通知を表示
-                    if ('Notification' in window && Notification.permission === 'granted') {
-                        new Notification('タスク完了！', {
-                            body: `${task.name}を完了しました`,
-                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%236366f1"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('タスク完了エラー:', error);
-                showToast('タスクの完了処理に失敗しました');
-            }
-        }
-        
-        // 削除確認モーダルを開く
-        function openDeleteConfirm(taskId, taskName) {
-            try {
-                taskToDelete = taskId;
-                const nameElement = document.getElementById('delete-task-name');
-                const modal = document.getElementById('delete-confirm-modal');
-                
-                if (nameElement) nameElement.textContent = taskName;
-                if (modal) modal.style.display = 'flex';
-            } catch (error) {
-                console.error('削除確認モーダルエラー:', error);
-            }
-        }
-        
-        // 削除確認モーダルを閉じる
-        function closeDeleteConfirm() {
-            try {
-                taskToDelete = null;
-                const modal = document.getElementById('delete-confirm-modal');
-                if (modal) modal.style.display = 'none';
-            } catch (error) {
-                console.error('削除確認閉じるエラー:', error);
-            }
-        }
-        
-        // タスクを削除
-        function confirmDelete() {
-            try {
-                if (taskToDelete) {
-                    tasks = tasks.filter(t => t.id !== taskToDelete);
-                    saveTasks();
-                    renderTasks();
-                    showToast('タスクを削除しました');
-                    closeDeleteConfirm();
-                }
-            } catch (error) {
-                console.error('タスク削除エラー:', error);
-                showToast('タスクの削除に失敗しました');
-            }
-        }
-        
-        // 履歴モーダルを開く
-        function openHistory(taskId) {
-            try {
-                const task = tasks.find(t => t.id === taskId);
-                if (!task) return;
-                
-                currentHistoryTask = task;
-                currentCalendarDate = new Date();
-                
-                const nameElement = document.getElementById('history-task-name');
-                const streakElement = document.getElementById('current-streak');
-                const totalElement = document.getElementById('total-days');
-                
-                if (nameElement) nameElement.textContent = task.name;
-                if (streakElement) streakElement.textContent = calculateStreak(task.completedDates || []);
-                if (totalElement) totalElement.textContent = (task.completedDates || []).length;
-                
-                renderWeeklyView(task.completedDates || []);
-                renderCalendar(task.completedDates || []);
-                renderMonthlyStats(task.completedDates || []);
-                
-                const modal = document.getElementById('history-modal');
-                if (modal) modal.style.display = 'flex';
-            } catch (error) {
-                console.error('履歴モーダルエラー:', error);
-                showToast('履歴の表示に失敗しました');
-            }
-        }
-        
-        // 履歴モーダルを閉じる
-        function closeHistory() {
-            try {
-                const modal = document.getElementById('history-modal');
-                if (modal) modal.style.display = 'none';
-                currentHistoryTask = null;
-            } catch (error) {
-                console.error('履歴閉じるエラー:', error);
-            }
-        }
-        
-        // 直近7日間の表示をレンダリング
-        function renderWeeklyView(completedDates) {
-            try {
-                const weeklyView = document.getElementById('weekly-view');
-                if (!weeklyView) return;
-                
-                weeklyView.innerHTML = generateWeeklyView(completedDates);
-            } catch (error) {
-                console.error('週表示レンダリングエラー:', error);
-            }
-        }
-        
-        // カレンダーをレンダリング
-        function renderCalendar(completedDates) {
-            try {
-                const year = currentCalendarDate.getFullYear();
-                const month = currentCalendarDate.getMonth();
-                
-                // タイトルを更新
-                const titleElement = document.getElementById('calendar-title');
-                if (titleElement) {
-                    titleElement.textContent = `${year}年${month + 1}月`;
-                }
-                
-                // カレンダーの日付を生成
-                const firstDay = new Date(year, month, 1);
-                const startDate = new Date(firstDay);
-                startDate.setDate(startDate.getDate() - firstDay.getDay());
-                
-                const calendarDays = document.getElementById('calendar-days');
-                if (!calendarDays) return;
-                
-                const completedSet = new Set(completedDates || []);
-                const today = new Date().toISOString().split('T')[0];
-                
-                let html = '';
-                
-                for (let i = 0; i < 42; i++) {
-                    const currentDate = new Date(startDate);
-                    currentDate.setDate(startDate.getDate() + i);
-                    const dateStr = currentDate.toISOString().split('T')[0];
-                    const day = currentDate.getDate();
-                    const isCurrentMonth = currentDate.getMonth() === month;
-                    const isCompleted = completedSet.has(dateStr);
-                    const isToday = dateStr === today;
-                    
-                    let className = 'calendar-day';
-                    if (!isCurrentMonth) className += ' other-month';
-                    if (isCompleted) className += ' completed';
-                    if (isToday) className += ' today';
-                    
-                    html += `<div class="${className}">${day}</div>`;
-                }
-                
-                calendarDays.innerHTML = html;
-            } catch (error) {
-                console.error('カレンダーレンダリングエラー:', error);
-            }
-        }
-        
-        // 月を変更
-        function changeMonth(direction) {
-            try {
-                if (!currentHistoryTask) return;
-                
-                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
-                renderCalendar(currentHistoryTask.completedDates || []);
-                renderMonthlyStats(currentHistoryTask.completedDates || []);
-            } catch (error) {
-                console.error('月変更エラー:', error);
-            }
-        }
-        
-        // 月間統計をレンダリング
-        function renderMonthlyStats(completedDates) {
-            try {
-                const year = currentCalendarDate.getFullYear();
-                const month = currentCalendarDate.getMonth();
-                
-                // その月の日付を取得
-                const lastDay = new Date(year, month + 1, 0);
-                const totalDaysInMonth = lastDay.getDate();
-                
-                // その月の完了日数を計算
-                const completedInMonth = (completedDates || []).filter(dateStr => {
-                    const date = new Date(dateStr);
-                    return date.getFullYear() === year && date.getMonth() === month;
-                }).length;
-                
-                const completionRate = Math.round((completedInMonth / totalDaysInMonth) * 100);
-                
-                const monthlyStats = document.getElementById('monthly-stats');
-                if (monthlyStats) {
-                    monthlyStats.innerHTML = `
-                        <div class="stats-header">${year}年${month + 1}月の実行状況</div>
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-value">${completedInMonth}</div>
-                                <div class="stat-label">実行日数</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">${completionRate}%</div>
-                                <div class="stat-label">達成率</div>
-                            </div>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('月間統計エラー:', error);
-            }
-        }
-        
         // 設定モーダルを開く
         function openSettings() {
             try {
@@ -1113,7 +1192,7 @@
                 const exportData = {
                     tasks: tasks,
                     exportDate: new Date().toISOString(),
-                    version: '1.1.0'
+                    version: '1.2.0'
                 };
                 
                 const dataStr = JSON.stringify(exportData, null, 2);
@@ -1266,15 +1345,6 @@
                     console.error('モーダルクリックイベントエラー:', error);
                 }
             });
-        });
-        
-        // ページ離脱前の確認（タスクがある場合）
-        window.addEventListener('beforeunload', function(e) {
-            if (tasks.length > 0) {
-                // 現代のブラウザでは独自メッセージは表示されない
-                e.preventDefault();
-                e.returnValue = '';
-            }
         });
     </script>
 </body>
