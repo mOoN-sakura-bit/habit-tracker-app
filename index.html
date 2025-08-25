@@ -1230,6 +1230,314 @@
                 console.error('リマインダー非表示エラー:', error);
             }
         }
+        
+        function runDataIntegrityCheck(showResults = false) {
+        try {
+            console.log('データ整合性チェック開始');
+            
+            let totalIssues = 0;
+            let fixedIssues = 0;
+            const issueDetails = [];
+            let totalRecords = 0;
+            
+            // タスクデータの基本チェック
+            if (!Array.isArray(tasks)) {
+                console.error('タスクデータが配列ではありません');
+                tasks = [];
+                totalIssues++;
+                fixedIssues++;
+                issueDetails.push('タスクデータを空の配列に初期化しました');
+            }
+            
+            // 各タスクの整合性チェック
+            for (let i = tasks.length - 1; i >= 0; i--) {
+                const task = tasks[i];
+                let taskFixed = false;
+                
+                // タスクIDのチェック
+                if (!task.id || typeof task.id !== 'number') {
+                    task.id = Date.now() + Math.random() * 1000;
+                    totalIssues++;
+                    fixedIssues++;
+                    taskFixed = true;
+                    issueDetails.push(`タスク「${task.name || '無名'}」: 無効なIDを修正`);
+                }
+                
+                // タスク名のチェック
+                if (!task.name || typeof task.name !== 'string' || task.name.trim() === '') {
+                    if (!task.name) {
+                        task.name = `タスク${task.id}`;
+                        totalIssues++;
+                        fixedIssues++;
+                        taskFixed = true;
+                        issueDetails.push(`タスクID${task.id}: 空のタスク名を修正`);
+                    } else {
+                        task.name = task.name.toString().trim();
+                        if (task.name === '') {
+                            task.name = `タスク${task.id}`;
+                            totalIssues++;
+                            fixedIssues++;
+                            taskFixed = true;
+                            issueDetails.push(`タスクID${task.id}: 空のタスク名を修正`);
+                        }
+                    }
+                }
+                
+                // 完了日配列のチェック
+                if (!Array.isArray(task.completedDates)) {
+                    task.completedDates = [];
+                    totalIssues++;
+                    fixedIssues++;
+                    taskFixed = true;
+                    issueDetails.push(`タスク「${task.name}」: completedDatesを配列に修正`);
+                }
+                
+                // 作成日のチェック
+                if (!task.createdAt || !isValidDate(task.createdAt)) {
+                    task.createdAt = new Date().toISOString();
+                    totalIssues++;
+                    fixedIssues++;
+                    taskFixed = true;
+                    issueDetails.push(`タスク「${task.name}」: 作成日を現在日時に設定`);
+                }
+                
+                // 完了日の詳細チェック
+                const originalDatesCount = task.completedDates.length;
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                
+                // 無効な日付と重複を除去
+                const validDates = new Set();
+                const invalidDates = [];
+                const futureDates = [];
+                const duplicates = [];
+                
+                task.completedDates.forEach(dateStr => {
+                    // 日付形式チェック
+                    if (!isValidDateString(dateStr)) {
+                        invalidDates.push(dateStr);
+                        return;
+                    }
+                    
+                    // 未来の日付チェック
+                    if (dateStr > todayStr) {
+                        futureDates.push(dateStr);
+                        return;
+                    }
+                    
+                    // 重複チェック
+                    if (validDates.has(dateStr)) {
+                        duplicates.push(dateStr);
+                        return;
+                    }
+                    
+                    validDates.add(dateStr);
+                });
+                
+                // 修正された配列を設定
+                task.completedDates = Array.from(validDates).sort();
+                
+                // 問題があった場合の記録
+                if (invalidDates.length > 0) {
+                    totalIssues += invalidDates.length;
+                    fixedIssues += invalidDates.length;
+                    taskFixed = true;
+                    issueDetails.push(`タスク「${task.name}」: ${invalidDates.length}件の無効な日付を除去`);
+                }
+                
+                if (futureDates.length > 0) {
+                    totalIssues += futureDates.length;
+                    fixedIssues += futureDates.length;
+                    taskFixed = true;
+                    issueDetails.push(`タスク「${task.name}」: ${futureDates.length}件の未来の日付を除去`);
+                }
+                
+                if (duplicates.length > 0) {
+                    totalIssues += duplicates.length;
+                    fixedIssues += duplicates.length;
+                    taskFixed = true;
+                    issueDetails.push(`タスク「${task.name}」: ${duplicates.length}件の重複日付を除去`);
+                }
+                
+                totalRecords += task.completedDates.length;
+                
+                // タスクが空で、完了記録もない場合は削除を検討
+                if (!task.name.trim() && task.completedDates.length === 0) {
+                    tasks.splice(i, 1);
+                    totalIssues++;
+                    fixedIssues++;
+                    taskFixed = true;
+                    issueDetails.push(`空のタスク（ID: ${task.id}）を削除`);
+                }
+            }
+            
+            // 重複タスクIDのチェック
+            const taskIds = new Set();
+            const duplicateIdTasks = [];
+            
+            tasks.forEach(task => {
+                if (taskIds.has(task.id)) {
+                    duplicateIdTasks.push(task);
+                } else {
+                    taskIds.add(task.id);
+                }
+            });
+            
+            // 重複IDを修正
+            duplicateIdTasks.forEach(task => {
+                const oldId = task.id;
+                task.id = Date.now() + Math.random() * 1000;
+                totalIssues++;
+                fixedIssues++;
+                issueDetails.push(`タスク「${task.name}」: 重複ID ${oldId} を ${task.id} に修正`);
+            });
+            
+            // 修正があった場合は保存
+            if (fixedIssues > 0) {
+                saveTasks();
+                console.log(`データ整合性チェック完了: ${fixedIssues}件の問題を修正`);
+            }
+            
+            // バックアップ設定を更新
+            backupSettings.lastIntegrityCheck = new Date().toISOString();
+            if (fixedIssues > 0) {
+                backupSettings.integrityIssuesFixed += fixedIssues;
+            }
+            saveBackupSettings();
+            
+            // UI更新
+            updateDataIntegrityStatus(totalIssues, fixedIssues, totalRecords);
+            
+            // 結果表示
+            if (showResults) {
+                showIntegrityCheckResults(totalIssues, fixedIssues, issueDetails, totalRecords);
+            }
+            
+            // メイン画面も更新
+            renderTasks();
+            
+            console.log(`整合性チェック結果: 総問題数 ${totalIssues}, 修正済み ${fixedIssues}, 総記録数 ${totalRecords}`);
+            
+            return {
+                totalIssues,
+                fixedIssues,
+                totalRecords,
+                issueDetails
+            };
+            
+        } catch (error) {
+            console.error('データ整合性チェックエラー:', error);
+            showToast('データ整合性チェック中にエラーが発生しました');
+            return {
+                totalIssues: 0,
+                fixedIssues: 0,
+                totalRecords: 0,
+                issueDetails: ['チェック中にエラーが発生しました']
+            };
+        }
+    }
+
+    // 日付文字列の有効性チェック
+    function isValidDateString(dateStr) {
+        if (typeof dateStr !== 'string') return false;
+        
+        // YYYY-MM-DD形式かチェック
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(dateStr)) return false;
+        
+        // 実際に有効な日付かチェック
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0] === dateStr;
+    }
+
+    // 日付の有効性チェック（ISO文字列用）
+    function isValidDate(dateStr) {
+        if (typeof dateStr !== 'string') return false;
+        const date = new Date(dateStr);
+        return !isNaN(date.getTime());
+    }
+
+    // データ整合性ステータスを更新
+    function updateDataIntegrityStatus(totalIssues, fixedIssues, totalRecords) {
+        try {
+            const statusElement = document.getElementById('data-integrity-status');
+            const countElement = document.getElementById('data-integrity-count');
+            const checkElement = document.getElementById('last-integrity-check');
+            
+            if (statusElement) {
+                if (totalIssues === 0) {
+                    statusElement.textContent = '正常';
+                    statusElement.style.color = '#10b981';
+                } else if (fixedIssues === totalIssues) {
+                    statusElement.textContent = '修正済み';
+                    statusElement.style.color = '#f59e0b';
+                } else {
+                    statusElement.textContent = '問題あり';
+                    statusElement.style.color = '#ef4444';
+                }
+            }
+            
+            if (countElement) {
+                countElement.textContent = totalRecords.toString();
+            }
+            
+            if (checkElement) {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+                checkElement.textContent = `最終チェック: 今日 ${timeStr}`;
+            }
+            
+        } catch (error) {
+            console.error('整合性ステータス更新エラー:', error);
+        }
+    }
+
+    // 整合性チェック結果を表示
+    function showIntegrityCheckResults(totalIssues, fixedIssues, issueDetails, totalRecords) {
+        try {
+            let message = `🔍 データ整合性チェック完了\n\n`;
+            message += `📊 総記録数: ${totalRecords}件\n`;
+            message += `⚠️ 発見された問題: ${totalIssues}件\n`;
+            message += `✅ 修正済み: ${fixedIssues}件\n\n`;
+            
+            if (totalIssues === 0) {
+                message += `🎉 データに問題はありませんでした！`;
+                showToast('データは正常です');
+            } else {
+                message += `📝 修正内容:\n`;
+                issueDetails.slice(0, 5).forEach((detail, index) => {
+                    message += `${index + 1}. ${detail}\n`;
+                });
+                
+                if (issueDetails.length > 5) {
+                    message += `...他 ${issueDetails.length - 5}件\n`;
+                }
+                
+                showToast(`${fixedIssues}件の問題を修正しました`);
+            }
+            
+            // 詳細結果をコンソールに出力
+            console.log('整合性チェック詳細結果:');
+            console.log('- 総記録数:', totalRecords);
+            console.log('- 問題数:', totalIssues);
+            console.log('- 修正数:', fixedIssues);
+            console.log('- 詳細:', issueDetails);
+            
+            // アラートで結果表示（オプション）
+            if (totalIssues > 0) {
+                if (confirm(`${message}\n\n詳細をコンソールで確認しますか？`)) {
+                    console.log('=== データ整合性チェック詳細結果 ===');
+                    issueDetails.forEach((detail, index) => {
+                        console.log(`${index + 1}. ${detail}`);
+                    });
+                }
+            }
+            
+        } catch (error) {
+            console.error('結果表示エラー:', error);
+        }
+    }
+        
         function loadTasks() {
             try {
                 const stored = localStorage.getItem('habit-tracker-tasks');
@@ -1951,3 +2259,4 @@
     </script>
 </body>
 </html>
+
