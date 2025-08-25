@@ -1203,8 +1203,8 @@
         
         <!-- ヘッダー -->
         <div class="header">
-            <h1>🔶🔸Task Tracker🔸🔶</h1>
-            <p>To Create Asylum</p>
+            <h1>🔥 毎日タスクトラッカー</h1>
+            <p>継続は力なり！</p>
         </div>
         
         <!-- 設定ボタン -->
@@ -1617,10 +1617,9 @@
                         issueDetails.push(`タスク「${task.name}」: 作成日を現在日時に設定`);
                     }
                     
-                    // 完了日の詳細チェック
+                    // 完了日の詳細チェック（修正版：タイムゾーン対応）
                     const originalDatesCount = task.completedDates.length;
-                    const today = new Date();
-                    const todayStr = today.toISOString().split('T')[0];
+                    const today = getTodayString(); // ローカル時間基準の今日
                     
                     // 無効な日付と重複を除去
                     const validDates = new Set();
@@ -1635,10 +1634,17 @@
                             return;
                         }
                         
-                        // 未来の日付チェック
-                        if (dateStr > todayStr) {
-                            futureDates.push(dateStr);
-                            return;
+                        // 未来の日付チェック（ローカル時間基準で比較）
+                        if (dateStr > today) {
+                            // 1日の猶予を持たせる（タイムゾーンの問題を考慮）
+                            const dateObj = new Date(dateStr);
+                            const todayObj = new Date(today);
+                            const diffDays = Math.floor((dateObj - todayObj) / (1000 * 60 * 60 * 24));
+                            
+                            if (diffDays > 1) {
+                                futureDates.push(dateStr);
+                                return;
+                            }
                         }
                         
                         // 重複チェック
@@ -1653,11 +1659,12 @@
                     // 修正された配列を設定
                     task.completedDates = Array.from(validDates).sort();
                     
-                    // 問題があった場合の記録
+                    // 問題があった場合の記録（修正版：削除された日付を詳細記録）
                     if (invalidDates.length > 0) {
                         totalIssues += invalidDates.length;
                         fixedIssues += invalidDates.length;
                         taskFixed = true;
+                        console.log(`無効な日付を除去:`, invalidDates);
                         issueDetails.push(`タスク「${task.name}」: ${invalidDates.length}件の無効な日付を除去`);
                     }
                     
@@ -1665,6 +1672,7 @@
                         totalIssues += futureDates.length;
                         fixedIssues += futureDates.length;
                         taskFixed = true;
+                        console.log(`未来の日付を除去:`, futureDates);
                         issueDetails.push(`タスク「${task.name}」: ${futureDates.length}件の未来の日付を除去`);
                     }
                     
@@ -1672,6 +1680,7 @@
                         totalIssues += duplicates.length;
                         fixedIssues += duplicates.length;
                         taskFixed = true;
+                        console.log(`重複日付を除去:`, duplicates);
                         issueDetails.push(`タスク「${task.name}」: ${duplicates.length}件の重複日付を除去`);
                     }
                     
@@ -2059,14 +2068,24 @@
             }
         }
         
-        // タスクを保存
+        // タスクを保存（デバッグ情報付き）
         function saveTasks() {
             try {
-                localStorage.setItem('habit-tracker-tasks', JSON.stringify(tasks));
-                console.log('タスク保存完了:', tasks.length + '件');
+                const dataToSave = JSON.stringify(tasks);
+                localStorage.setItem('habit-tracker-tasks', dataToSave);
+                console.log('タスク保存完了:', tasks.length + '件', 'データサイズ:', dataToSave.length, 'bytes');
+                
+                // 保存確認のためのダブルチェック
+                const savedData = localStorage.getItem('habit-tracker-tasks');
+                if (!savedData) {
+                    console.error('保存確認失敗: データが見つかりません');
+                    showToast('データ保存に問題があります');
+                } else {
+                    console.log('保存確認成功: データが正常に保存されました');
+                }
             } catch (error) {
                 console.error('タスク保存エラー:', error);
-                showToast('データの保存に失敗しました');
+                showToast('データの保存に失敗しました: ' + error.message);
             }
         }
         
@@ -2239,38 +2258,65 @@ function completeTaskFromDetail() {
         if (!currentDetailTask) return;
         
         const today = getTodayString();
-        if (!(currentDetailTask.completedDates || []).includes(today)) {
-            if (!currentDetailTask.completedDates) currentDetailTask.completedDates = [];
-            currentDetailTask.completedDates.push(today);
-            saveTasks();
-            
-            // 統計値を再計算して更新
-            const streak = calculateStreak(currentDetailTask.completedDates);
-            const total = currentDetailTask.completedDates.length;
-            
-            document.getElementById('detail-streak').textContent = `🔥 ${streak}`;
-            document.getElementById('detail-total').textContent = `📊 ${total}`;
-            
-            // 完了ボタンの状態を更新
-            const completeBtn = document.getElementById('detail-complete-btn');
-            completeBtn.textContent = '✅ 今日は完了済み';
-            completeBtn.disabled = true;
-            
-            // その他の表示も更新
-            renderDetailWeeklyView(currentDetailTask.completedDates);
-            renderDetailCalendar(currentDetailTask.completedDates);
-            renderDetailMonthlyStats(currentDetailTask.completedDates);
-            
-            showToast('🎉 タスクを完了しました！');
-            
-            // 通知を表示
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('タスク完了！', {
-                    body: `${currentDetailTask.name}を完了しました`,
-                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e55100"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
-                });
-            }
+        console.log('完了処理開始:', today, 'タスク:', currentDetailTask.name);
+        
+        // 既に今日完了しているかチェック
+        if ((currentDetailTask.completedDates || []).includes(today)) {
+            console.log('既に完了済み');
+            return;
         }
+        
+        // tasks配列内の対応するタスクを見つけて更新
+        const taskIndex = tasks.findIndex(t => t.id === currentDetailTask.id);
+        if (taskIndex === -1) {
+            console.error('タスクが見つかりません');
+            showToast('エラー: タスクが見つかりません');
+            return;
+        }
+        
+        // tasks配列のタスクを更新
+        if (!tasks[taskIndex].completedDates) {
+            tasks[taskIndex].completedDates = [];
+        }
+        tasks[taskIndex].completedDates.push(today);
+        
+        // currentDetailTaskの参照も更新
+        currentDetailTask = tasks[taskIndex];
+        
+        // データを保存
+        saveTasks();
+        console.log('完了データ保存完了:', tasks[taskIndex].completedDates);
+        
+        // 統計値を再計算して更新
+        const streak = calculateStreak(currentDetailTask.completedDates);
+        const total = currentDetailTask.completedDates.length;
+        
+        document.getElementById('detail-streak').textContent = `🔥 ${streak}`;
+        document.getElementById('detail-total').textContent = `📊 ${total}`;
+        
+        // 完了ボタンの状態を更新
+        const completeBtn = document.getElementById('detail-complete-btn');
+        completeBtn.textContent = '✅ 今日は完了済み';
+        completeBtn.disabled = true;
+        
+        // その他の表示も更新
+        renderDetailWeeklyView(currentDetailTask.completedDates);
+        renderDetailCalendar(currentDetailTask.completedDates);
+        renderDetailMonthlyStats(currentDetailTask.completedDates);
+        
+        // メインリストも更新（重要：これによりメイン画面の表示が即座に更新される）
+        renderTasks();
+        
+        showToast('🎉 タスクを完了しました！');
+        
+        // 通知を表示
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('タスク完了！', {
+                body: `${currentDetailTask.name}を完了しました`,
+                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e55100"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
+            });
+        }
+        
     } catch (error) {
         console.error('完了処理エラー:', error);
         showToast('タスクの完了処理に失敗しました');
@@ -2827,4 +2873,3 @@ function renderDetailCalendar(completedDates) {
     </script>
 </body>
 </html>
-
