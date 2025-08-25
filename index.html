@@ -7,12 +7,30 @@
     
     <!-- PWA設定 -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="#e55100">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <style>
+        /* カラーパレット定義 */
+        :root {
+            --primary-orange: #e55100;
+            --accent-gold: #ffbb05;
+            --light-orange: #fff3e0;
+            --light-gold: #fff8e1;
+            --white: #ffffff;
+            --black: #000000;
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #eeeeee;
+            --gray-300: #e0e0e0;
+            --gray-600: #757575;
+            --gray-700: #616161;
+            --gray-800: #424242;
+            --gray-900: #212121;
+        }
+
         /* 基本スタイル */
         * {
             margin: 0;
@@ -22,214 +40,407 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--black);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
-        
+
+        /* 幾何学的背景要素 */
+        .geometric-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orange-line {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 300px;
+            height: 8px;
+            background: var(--primary-orange);
+        }
+
+        .gold-triangle {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 0;
+            height: 0;
+            border-left: 200px solid var(--accent-gold);
+            border-top: 200px solid transparent;
+            border-bottom: 200px solid transparent;
+            transform: rotate(45deg);
+            opacity: 0.9;
+        }
+
+        .dots-container {
+            position: absolute;
+            top: 200px;
+            right: 60px;
+            transform: scale(2);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary-orange);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .dot:nth-child(1) { top: 0; left: 0; }
+        .dot:nth-child(2) { top: 0; left: 20px; }
+        .dot:nth-child(3) { top: 0; left: 40px; }
+        .dot:nth-child(4) { top: 20px; left: 0; }
+        .dot:nth-child(5) { top: 20px; left: 20px; }
+        .dot:nth-child(6) { top: 20px; left: 40px; }
+        .dot:nth-child(7) { top: 40px; left: 0; }
+        .dot:nth-child(8) { top: 40px; left: 20px; }
+        .dot:nth-child(9) { top: 40px; left: 40px; }
+
+        .white-triangle {
+            position: absolute;
+            bottom: 60px;
+            left: -20px;
+            width: 180px;
+            height: 180px;
+            border: 4px solid var(--white);
+            background: transparent;
+            clip-path: polygon(0% 100%, 100% 100%, 50% 0%);
+            opacity: 0.8;
+        }
+
+        .orange-semicircle {
+            position: absolute;
+            bottom: -150px;
+            right: -150px;
+            width: 400px;
+            height: 400px;
+            background: var(--primary-orange);
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .arrow-shape {
+            position: absolute;
+            bottom: 150px;
+            left: 40px;
+            width: 180px;
+            height: 220px;
+        }
+
+        .arrow-line {
+            background: var(--white);
+            position: absolute;
+            border-radius: 2px;
+        }
+
+        .arrow-line.shaft {
+            width: 14px;
+            height: 130px;
+            left: 83px;
+            bottom: 0;
+        }
+
+        .arrow-line.left-wing {
+            width: 14px;
+            height: 100px;
+            left: 40px;
+            bottom: 110px;
+            transform: rotate(45deg);
+            transform-origin: bottom center;
+        }
+
+        .arrow-line.right-wing {
+            width: 14px;
+            height: 100px;
+            left: 126px;
+            bottom: 110px;
+            transform: rotate(-45deg);
+            transform-origin: bottom center;
+        }
+
+        .accent-circle {
+            position: absolute;
+            top: 300px;
+            left: -100px;
+            width: 200px;
+            height: 200px;
+            border: 3px solid var(--accent-gold);
+            border-radius: 50%;
+            background: transparent;
+            opacity: 0.3;
+        }
+
+        /* メインコンテンツ */
         .container {
             max-width: 400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
         
         .header {
             text-align: center;
-            color: white;
+            color: var(--white);
             margin-bottom: 24px;
+            position: relative;
+            z-index: 10;
         }
         
         .header h1 {
             font-size: 22px;
             margin-bottom: 8px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+            font-weight: 700;
         }
         
         .header p {
             font-size: 14px;
             opacity: 0.9;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        /* 開始日表示用の追加CSS */
-.task-meta-compact {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 4px;
-    gap: 8px;
-}
-
-.task-start-date {
-    font-size: 12px;
-    color: #6b7280;
-    font-weight: 500;
-    background: #f3f4f6;
-    padding: 2px 6px;
-    border-radius: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.task-card-compact.completed-today .task-start-date {
-    background: rgba(16, 185, 129, 0.1);
-    color: #047857;
-}
-
-.streak-compact {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: #6b7280;
-}
-
-.streak-number-compact {
-    font-weight: bold;
-    color: #f59e0b;
-}
-
-.task-name-compact {
-    font-size: 16px;
-    font-weight: 600;
-    color: #374151;
-    flex: 1;
-    line-height: 1.3;
-}
-
-/* タスクカード全体の高さ調整 */
-.task-card-compact {
-    background: white;
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid #f3f4f6;
-    min-height: 64px;
-}
-
-/* レスポンシブ調整 */
-@media (max-width: 320px) {
-    .task-meta-compact {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-    
-    .task-start-date {
-        font-size: 11px;
-    }
-}
-
-        
-        /* コンパクトなタスクカード */
-        .task-card-compact {
-            background: white;
+        /* 設定ボタン */
+        .settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            padding: 12px;
             border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            transition: all 0.2s;
+            font-weight: 600;
+            z-index: 20;
+            box-shadow: 0 4px 15px rgba(229, 81, 0, 0.4);
+            font-size: 16px;
+        }
+
+        /* タスクカード */
+        .task-card-compact {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid #f3f4f6;
+            border: 2px solid transparent;
+            min-height: 70px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
         }
-        
+
         .task-card-compact:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border-color: #e5e7eb;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 1);
         }
         
         .task-card-compact.completed-today {
-            background: white;
-            border: 1px solid #10b981;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--primary-orange);
+            box-shadow: 0 8px 32px rgba(229, 81, 0, 0.3);
         }
-        
-        .task-card-compact.completed-today:hover {
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+
+        .task-card-compact.completed-today::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--accent-gold));
+            border-radius: 18px;
+            z-index: -1;
+            opacity: 0.1;
         }
         
         .task-info {
             flex: 1;
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            gap: 6px;
         }
         
         .task-name-compact {
-            font-size: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--gray-800);
+            line-height: 1.3;
+        }
+        
+        .task-meta-compact {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .task-start-date {
+            font-size: 13px;
+            color: var(--black);
             font-weight: 600;
-            color: #374151;
-            flex: 1;
+            background: var(--accent-gold);
+            padding: 4px 10px;
+            border-radius: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(255, 187, 5, 0.3);
+        }
+        
+        .task-card-compact.completed-today .task-start-date {
+            background: var(--light-gold);
+            color: var(--gray-800);
         }
         
         .streak-compact {
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 14px;
-            color: #6b7280;
+            font-size: 15px;
+            color: var(--gray-600);
+            font-weight: 500;
         }
         
         .streak-number-compact {
             font-weight: bold;
-            color: #f59e0b;
+            color: var(--primary-orange);
+            font-size: 16px;
         }
         
         .status-indicator {
-            width: 20px;
-            height: 20px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: bold;
             flex-shrink: 0;
         }
         
         .status-completed {
-            background: #10b981;
-            color: white;
+            background: var(--primary-orange);
+            color: var(--white);
+            box-shadow: 0 0 20px rgba(229, 81, 0, 0.5);
         }
         
         .status-pending {
-            background: #e5e7eb;
-            color: #9ca3af;
+            background: var(--accent-gold);
+            color: var(--black);
+            box-shadow: 0 0 15px rgba(255, 187, 5, 0.4);
         }
-        
+
+        /* 追加ボタン */
         .add-task-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 56px;
-            height: 56px;
-            background: #6366f1;
-            color: white;
+            width: 64px;
+            height: 64px;
+            background: var(--accent-gold);
+            color: var(--black);
             border: none;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 187, 5, 0.5);
+            font-weight: bold;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        .add-task-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(255, 187, 5, 0.7);
+            background: var(--primary-orange);
+            color: var(--white);
+        }
+
+        /* バックアップリマインダー */
+        .backup-reminder {
+            background: rgba(255, 187, 5, 0.95);
+            backdrop-filter: blur(15px);
+            color: var(--black);
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            box-shadow: 0 8px 25px rgba(255, 187, 5, 0.4);
+            position: relative;
+            z-index: 10;
+            border: 2px solid rgba(255, 187, 5, 0.3);
+        }
+
+        .backup-reminder.warning {
+            background: var(--accent-gold);
+            color: var(--gray-800);
+        }
+
+        .backup-reminder.danger {
+            background: #d32f2f;
+            color: var(--white);
         }
         
-        .settings-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+        .backup-reminder-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .backup-reminder-btn {
+            background: var(--primary-orange);
+            color: var(--white);
             border: none;
-            padding: 8px;
+            padding: 8px 16px;
             border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
             cursor: pointer;
+            margin-top: 10px;
+            margin-right: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(229, 81, 0, 0.3);
+        }
+
+        .backup-reminder-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(229, 81, 0, 0.5);
+        }
+
+        /* 空の状態 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 10;
         }
         
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* モーダル共通スタイル */
         .modal {
             position: fixed;
             top: 0;
@@ -245,232 +456,243 @@
         }
         
         .modal-content {
-            background: white;
-            border-radius: 12px;
+            background: var(--white);
+            border-radius: 24px;
             width: 100%;
-            max-width: 360px;
-            max-height: 90vh;
+            max-width: 450px;
+            max-height: 95vh;
             overflow-y: auto;
             position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
         
         .modal-header {
-            padding: 20px 20px 0 20px;
+            padding: 30px 30px 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            background: var(--accent-gold);
+            border-radius: 24px 24px 0 0;
+            min-height: 100px;
         }
         
         .modal-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #374151;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--black);
             flex: 1;
         }
         
         .modal-close {
-            background: none;
+            background: var(--primary-orange);
+            color: var(--white);
             border: none;
-            font-size: 24px;
-            color: #9ca3af;
+            font-size: 20px;
             cursor: pointer;
-            padding: 4px;
+            padding: 12px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            box-shadow: 0 4px 12px rgba(229, 81, 0, 0.3);
+            transition: all 0.2s;
         }
-        
+
         .modal-close:hover {
-            color: #374151;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(229, 81, 0, 0.4);
         }
         
         .modal-body {
-            padding: 0 20px 20px 20px;
+            padding: 30px;
         }
-        
-        /* 詳細画面用スタイル */
+
+        /* タスク詳細画面専用スタイル */
         .task-detail-header {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            padding: 32px 24px 28px 24px;
-            margin: -20px -20px 24px -20px;
-            border-radius: 12px 12px 0 0;
+            background: var(--primary-orange);
+            color: var(--white);
+            padding: 40px 30px 36px 30px;
+            border-radius: 24px 24px 0 0;
             position: relative;
-            overflow: hidden;
         }
         
-        .task-detail-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            z-index: 0;
+        .task-detail-header .modal-close {
+            background: var(--accent-gold);
+            color: var(--black);
         }
         
         .task-detail-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding: 0 4px;
-            line-height: 1.4;
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.3;
+            padding-right: 60px;
+            color: var(--white);
         }
         
         .task-detail-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            position: relative;
-            z-index: 1;
-            padding: 0 4px;
         }
         
         .task-stat {
             text-align: center;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            padding: 16px 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: var(--accent-gold);
+            color: var(--black);
+            padding: 20px 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(255, 187, 5, 0.2);
         }
         
         .task-stat-value {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 800;
             display: block;
-            margin-bottom: 6px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            margin-bottom: 8px;
+            color: var(--black);
         }
         
         .task-stat-label {
-            font-size: 11px;
-            opacity: 0.95;
+            font-size: 12px;
             line-height: 1.4;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            color: var(--black);
         }
-        
+
+        /* 完了ボタン */
         .complete-btn {
             width: 100%;
-            background: #6366f1;
-            color: white;
+            background: var(--primary-orange);
+            color: var(--white);
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.3s;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(229, 81, 0, 0.2);
         }
-        
+
         .complete-btn:hover {
-            background: #5856eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(229, 81, 0, 0.3);
         }
-        
+
         .complete-btn:disabled {
-            background: #10b981;
+            background: var(--gray-600);
+            transform: none;
+            box-shadow: none;
             cursor: not-allowed;
         }
         
         .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #374151;
-            margin: 20px 0 12px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin: 30px 0 16px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .weekly-view {
             display: flex;
             justify-content: center;
-            gap: 4px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 30px;
         }
         
         .week-day {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 700;
             transition: all 0.2s;
         }
         
         .week-day.completed {
-            background: #10b981;
-            color: white;
+            background: var(--primary-orange);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(229, 81, 0, 0.3);
         }
         
         .week-day.today {
-            background: #3b82f6;
-            color: white;
+            background: var(--accent-gold);
+            color: var(--black);
+            box-shadow: 0 4px 12px rgba(255, 187, 5, 0.3);
         }
         
         .week-day:not(.completed):not(.today) {
-            background: #f3f4f6;
-            color: #9ca3af;
+            background: var(--gray-100);
+            color: var(--gray-600);
         }
         
-        /* カレンダースタイル */
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding: 0 8px;
+            margin-bottom: 20px;
+            padding: 0 10px;
         }
         
         .calendar-nav-btn {
-            background: none;
+            background: var(--primary-orange);
+            color: var(--white);
             border: none;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
-            padding: 8px;
+            padding: 12px;
             border-radius: 50%;
-            color: #6366f1;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(229, 81, 0, 0.2);
+            transition: all 0.2s;
         }
-        
+
         .calendar-nav-btn:hover {
-            background: rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(229, 81, 0, 0.3);
         }
         
         .calendar-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #374151;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--black);
+            background: var(--accent-gold);
+            padding: 12px 24px;
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(255, 187, 5, 0.2);
         }
         
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin-bottom: 8px;
+            gap: 4px;
+            margin-bottom: 12px;
         }
         
         .weekday {
             text-align: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #6b7280;
-            padding: 8px 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gray-600);
+            padding: 12px 6px;
         }
         
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin-bottom: 16px;
+            gap: 4px;
+            margin-bottom: 20px;
         }
         
         .calendar-day {
@@ -478,1123 +700,450 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            border-radius: 4px;
+            font-size: 14px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            font-weight: 600;
         }
         
         .calendar-day.other-month {
-            color: #d1d5db;
+            color: var(--gray-200);
         }
         
         .calendar-day.completed {
-            background: #10b981;
-            color: white;
-            font-weight: bold;
+            background: var(--primary-orange);
+            color: var(--white);
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(229, 81, 0, 0.2);
         }
         
         .calendar-day.today {
-            background: #dbeafe;
-            color: #1d4ed8;
-            font-weight: bold;
-            border: 1px solid #3b82f6;
+            background: var(--accent-gold);
+            color: var(--black);
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(255, 187, 5, 0.2);
         }
         
         .calendar-day.today.completed {
-            background: #059669;
-            color: white;
-            border: 1px solid #047857;
+            background: var(--primary-orange);
+            color: var(--white);
+            border: 3px solid var(--accent-gold);
+            box-shadow: 0 4px 12px rgba(229, 81, 0, 0.3);
         }
-        
+
         .calendar-day:hover:not(.completed):not(.today) {
-            background: #f3f4f6;
+            background: var(--gray-100);
+            transform: translateY(-1px);
         }
         
         .monthly-stats {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 8px;
+            background: var(--light-gold);
+            padding: 20px;
+            border-radius: 16px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
             text-align: center;
+            border: 2px solid var(--accent-gold);
+            margin-bottom: 30px;
         }
         
         .monthly-stat {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
+            background: var(--white);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
         .monthly-stat-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #6366f1;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-orange);
             display: block;
         }
         
         .monthly-stat-label {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-        
-        /* 編集セクション */
-        .edit-zone {
-            margin-top: 24px;
-            padding: 16px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-        }
-        
-        .edit-zone-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 8px;
-        }
-        
-        .edit-zone-desc {
             font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 12px;
-        }
-        
-        /* 危険ゾーン */
-        .danger-zone {
-            margin-top: 24px;
-            padding: 16px;
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 8px;
-        }
-        
-        .danger-zone-title {
-            font-size: 14px;
+            color: var(--gray-600);
+            margin-top: 6px;
             font-weight: 600;
-            color: #dc2626;
-            margin-bottom: 8px;
         }
-        
-        .danger-zone-desc {
-            font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 12px;
-        }
-        .danger-zone {
-            margin-top: 24px;
-            padding: 16px;
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 8px;
-        }
-        
-        .danger-zone-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #dc2626;
-            margin-bottom: 8px;
-        }
-        
-        .danger-zone-desc {
-            font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 12px;
-        }
-        
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-right: 8px;
-            margin-bottom: 4px;
-            transition: all 0.2s;
-        }
-        
-        .btn-primary {
-            background: #6366f1;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #e5e7eb;
-            color: #374151;
-        }
-        
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-        }
-        
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        .install-prompt {
-            background: rgba(16, 185, 129, 0.95);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            display: none;
-            font-size: 14px;
-        }
-        
-        .install-prompt button {
-            background: white;
-            color: #10b981;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-            font-size: 12px;
-        }
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            display: none;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
-        }
-        
-        .backup-reminder.warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-        
-        .backup-reminder.danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-        
-        .backup-reminder-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .backup-reminder-text {
-            font-size: 12px;
-            opacity: 0.95;
-            margin-bottom: 8px;
-        }
-        
-        .backup-reminder-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 8px;
-        }
-        
-        .backup-reminder-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
+
+        /* 設定画面のスタイル */
         .backup-info-section {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            border-left: 4px solid #6366f1;
+            background: var(--light-gold);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-gold);
         }
-        
+
         .backup-info-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
-        
+
         .backup-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 12px;
         }
-        
+
         .backup-stat {
             text-align: center;
-            padding: 8px;
-            background: white;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
+            padding: 16px;
+            background: var(--white);
+            border-radius: 12px;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 2px 8px rgba(255, 187, 5, 0.1);
         }
-        
+
         .backup-stat-value {
-            font-size: 16px;
-            font-weight: bold;
-            color: #6366f1;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-orange);
             display: block;
         }
-        
+
         .backup-stat-label {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 2px;
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* フォームとボタン */
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 3px solid var(--gray-200);
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+            background: var(--white);
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 4px rgba(229, 81, 0, 0.1);
+            transform: translateY(-2px);
         }
         
-        .backup-settings {
-            margin-top: 12px;
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            font-weight: 700;
         }
         
-        .backup-setting-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .btn-primary {
+            background: var(--primary-orange);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(229, 81, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(229, 81, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--accent-gold);
+            color: var(--black);
+            box-shadow: 0 4px 12px rgba(255, 187, 5, 0.2);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 187, 5, 0.3);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: var(--white);
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        /* 編集・危険セクション */
+        .edit-zone {
+            background: var(--light-orange);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-orange);
+        }
+
+        .edit-zone-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-800);
             margin-bottom: 8px;
         }
-        
-        .backup-setting-label {
+
+        .edit-zone-desc {
             font-size: 13px;
-            color: #374151;
-        }
-        
-        .backup-setting-select {
-            padding: 4px 8px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 12px;
-            background: white;
-        }
-            background: rgba(16, 185, 129, 0.95);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 12px;
+            color: var(--gray-600);
             margin-bottom: 16px;
-            display: none;
-            font-size: 14px;
+            line-height: 1.4;
         }
-        
-        .install-prompt button {
-            background: white;
-            color: #10b981;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-            font-size: 12px;
+
+        .danger-zone {
+            background: #fef2f2;
+            padding: 20px;
+            border-radius: 16px;
+            border-left: 4px solid #dc2626;
         }
-        
+
+        .danger-zone-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 8px;
+        }
+
+        .danger-zone-desc {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        /* トースト */
         .toast {
             position: fixed;
-            bottom: 80px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
+            background: var(--gray-900);
+            color: var(--white);
+            padding: 16px 24px;
+            border-radius: 12px;
             display: none;
             z-index: 1000;
             max-width: 90%;
             text-align: center;
-            font-size: 14px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .empty-state h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        
-        .empty-state p {
-            font-size: 14px;
-            opacity: 0.9;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
-        /* オレンジテーマのCSS更新 */
-
-/* 基本スタイル - 背景グラデーション更新 */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #ff5e00 0%, #ffbb05 100%);
-    min-height: 100vh;
-    padding: 20px;
-}
-
-/* 完了済みタスクカードの色 */
-.task-card-compact.completed-today {
-    background: white;
-    border: 1px solid #ff5e00;
-    box-shadow: 0 2px 8px rgba(255, 94, 0, 0.15);
-}
-
-.task-card-compact.completed-today:hover {
-    box-shadow: 0 4px 12px rgba(255, 94, 0, 0.25);
-}
-
-/* 開始日表示の色 */
-.task-start-date {
-    font-size: 12px;
-    color: #92400e;
-    font-weight: 500;
-    background: #fef3c7;
-    padding: 2px 6px;
-    border-radius: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.task-card-compact.completed-today .task-start-date {
-    background: rgba(255, 94, 0, 0.1);
-    color: #c2410c;
-}
-
-/* ストライクの色 */
-.streak-number-compact {
-    font-weight: bold;
-    color: #ff5e00;
-}
-
-/* ステータスインジケーター */
-.status-completed {
-    background: #ff5e00;
-    color: white;
-}
-
-/* 追加ボタン */
-.add-task-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(135deg, #ff5e00, #ffbb05);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(255, 94, 0, 0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.add-task-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 94, 0, 0.5);
-}
-
-/* 設定ボタン */
-.settings-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.25);
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    transition: background 0.2s;
-}
-
-.settings-btn:hover {
-    background: rgba(255, 255, 255, 0.35);
-}
-
-/* 詳細画面のヘッダー */
-.task-detail-header {
-    background: linear-gradient(135deg, #ff5e00, #ffbb05);
-    color: white;
-    padding: 32px 24px 28px 24px;
-    margin: -20px -20px 24px -20px;
-    border-radius: 12px 12px 0 0;
-    position: relative;
-    overflow: hidden;
-}
-
-/* タスク統計値の色 */
-.task-stat {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    padding: 16px 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* 完了ボタン */
-.complete-btn {
-    width: 100%;
-    background: linear-gradient(135deg, #ff5e00, #ffbb05);
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(255, 94, 0, 0.2);
-}
-
-.complete-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 94, 0, 0.3);
-}
-
-.complete-btn:disabled {
-    background: #10b981;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
-}
-
-/* 今日の日付表示 */
-.week-day.today {
-    background: #ffbb05;
-    color: white;
-}
-
-.calendar-day.today {
-    background: #fef3c7;
-    color: #92400e;
-    font-weight: bold;
-    border: 1px solid #ffbb05;
-}
-
-.calendar-day.today.completed {
-    background: #ff5e00;
-    color: white;
-    border: 1px solid #c2410c;
-}
-
-/* 完了済みの日付 */
-.week-day.completed,
-.calendar-day.completed {
-    background: #ff5e00;
-    color: white;
-}
-
-/* カレンダーナビゲーションボタン */
-.calendar-nav-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    color: #ff5e00;
-    transition: background 0.2s;
-}
-
-.calendar-nav-btn:hover {
-    background: rgba(255, 94, 0, 0.1);
-}
-
-/* 月間統計値 */
-.monthly-stat-value {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ff5e00;
-    display: block;
-}
-
-/* ボタンスタイル */
-.btn-primary {
-    background: linear-gradient(135deg, #ff5e00, #ffbb05);
-    color: white;
-    box-shadow: 0 2px 4px rgba(255, 94, 0, 0.2);
-}
-
-.btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(255, 94, 0, 0.3);
-}
-
-/* フォーカス状態 */
-.input-field:focus {
-    outline: none;
-    border-color: #ff5e00;
-    box-shadow: 0 0 0 3px rgba(255, 94, 0, 0.1);
-}
-
-/* PWAインストール促進 */
-.install-prompt {
-    background: linear-gradient(135deg, #ff5e00, #ffbb05);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    display: none;
-    box-shadow: 0 2px 8px rgba(255, 94, 0, 0.2);
-}
-
-.install-prompt button {
-    background: white;
-    color: #ff5e00;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 8px;
-    font-size: 12px;
-}
-
-.install-prompt button:hover {
-    background: #fef3c7;
-}
-
-/* バックアップリマインダー */
-.backup-reminder {
-    background: linear-gradient(135deg, #ff5e00, #ffbb05);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    display: none;
-    box-shadow: 0 2px 8px rgba(255, 94, 0, 0.2);
-}
-
-.backup-reminder.warning {
-    background: linear-gradient(135deg, #ffbb05, #fbbf24);
-}
-
-.backup-reminder-btn {
-    background: rgba(255, 255, 255, 0.25);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 8px;
-    transition: background 0.2s;
-}
-
-.backup-reminder-btn:hover {
-    background: rgba(255, 255, 255, 0.35);
-}
-
-/* バックアップ情報セクション */
-.backup-info-section {
-    background: #fef3c7;
-    padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    border-left: 4px solid #ff5e00;
-}
-
-.backup-stat-value {
-    font-size: 16px;
-    font-weight: bold;
-    color: #ff5e00;
-    display: block;
-}
-
-/* データ整合性の状態色 */
-#data-integrity-status[style*="color: #10b981"] {
-    color: #ff5e00 !important;
-}
-
-/* テーマカラー更新 */
-:root {
-    --primary-orange: #ff5e00;
-    --secondary-orange: #ffbb05;
-    --light-orange: #fef3c7;
-    --dark-orange: #c2410c;
-}
-
-
-        /* ソリッドオレンジテーマのCSS */
-
-/* カラーパレット定義 */
-:root {
-    --primary-orange: #e55100;    /* 明度を落としたメインオレンジ */
-    --accent-orange: #ffbb05;     /* アクセントオレンジ */
-    --light-orange: #fff3e0;      /* 薄いオレンジ */
-    --dark-orange: #bf360c;       /* 濃いオレンジ */
-    --white: #ffffff;
-    --black: #000000;
-    --gray-50: #fafafa;
-    --gray-100: #f5f5f5;
-    --gray-200: #eeeeee;
-    --gray-300: #e0e0e0;
-    --gray-600: #757575;
-    --gray-700: #616161;
-    --gray-800: #424242;
-    --gray-900: #212121;
-}
-
-/* 基本スタイル - フラットな背景 */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--primary-orange);
-    min-height: 100vh;
-    padding: 20px;
-}
-
-/* タスクカード */
-.task-card-compact {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 2px solid transparent;
-    min-height: 64px;
-}
-
-.task-card-compact:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-color: var(--gray-200);
-}
-
-.task-card-compact.completed-today {
-    background: var(--white);
-    border: 2px solid var(--primary-orange);
-    box-shadow: 0 2px 8px rgba(229, 81, 0, 0.15);
-}
-
-.task-card-compact.completed-today:hover {
-    box-shadow: 0 4px 12px rgba(229, 81, 0, 0.25);
-}
-
-/* タスク名 */
-.task-name-compact {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--gray-800);
-    flex: 1;
-    line-height: 1.3;
-}
-
-/* 開始日表示 */
-.task-start-date {
-    font-size: 12px;
-    color: var(--gray-600);
-    font-weight: 500;
-    background: var(--gray-100);
-    padding: 3px 8px;
-    border-radius: 6px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.task-card-compact.completed-today .task-start-date {
-    background: var(--light-orange);
-    color: var(--dark-orange);
-}
-
-/* ストリーク表示 */
-.streak-compact {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: var(--gray-600);
-}
-
-.streak-number-compact {
-    font-weight: bold;
-    color: var(--primary-orange);
-}
-
-/* ステータスインジケーター */
-.status-indicator {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    flex-shrink: 0;
-    font-weight: bold;
-}
-
-.status-completed {
-    background: var(--primary-orange);
-    color: var(--white);
-}
-
-.status-pending {
-    background: var(--gray-200);
-    color: var(--gray-600);
-}
-
-/* 追加ボタン */
-.add-task-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 56px;
-    height: 56px;
-    background: var(--primary-orange);
-    color: var(--white);
-    border: none;
-    border-radius: 50%;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.add-task-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-    background: var(--dark-orange);
-}
-
-/* 設定ボタン */
-.settings-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--white);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.settings-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* モーダル */
-.modal-content {
-    background: var(--white);
-    border-radius: 12px;
-    width: 100%;
-    max-width: 360px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-/* 詳細画面のヘッダー */
-.task-detail-header {
-    background: var(--primary-orange);
-    color: var(--white);
-    padding: 32px 24px 28px 24px;
-    margin: -20px -20px 24px -20px;
-    border-radius: 12px 12px 0 0;
-    position: relative;
-}
-
-.task-detail-header::before {
-    display: none; /* グラデーション効果を削除 */
-}
-
-.task-detail-name {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    padding: 0 4px;
-    line-height: 1.4;
-    position: relative;
-    color: var(--white);
-}
-
-/* タスク統計 */
-.task-stat {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.15);
-    padding: 16px 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.task-stat-value {
-    font-size: 20px;
-    font-weight: bold;
-    display: block;
-    margin-bottom: 6px;
-    color: var(--white);
-}
-
-.task-stat-label {
-    font-size: 11px;
-    opacity: 0.9;
-    line-height: 1.4;
-    color: var(--white);
-}
-
-/* 完了ボタン */
-.complete-btn {
-    width: 100%;
-    background: var(--primary-orange);
-    color: var(--white);
-    border: none;
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 20px;
-}
-
-.complete-btn:hover {
-    background: var(--dark-orange);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(229, 81, 0, 0.3);
-}
-
-.complete-btn:disabled {
-    background: var(--gray-400);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* カレンダー */
-.week-day.completed,
-.calendar-day.completed {
-    background: var(--primary-orange);
-    color: var(--white);
-}
-
-.week-day.today {
-    background: var(--accent-orange);
-    color: var(--gray-800);
-}
-
-.calendar-day.today {
-    background: var(--light-orange);
-    color: var(--dark-orange);
-    font-weight: bold;
-    border: 2px solid var(--accent-orange);
-}
-
-.calendar-day.today.completed {
-    background: var(--primary-orange);
-    color: var(--white);
-    border: 2px solid var(--dark-orange);
-}
-
-.calendar-nav-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    color: var(--primary-orange);
-    transition: background 0.2s;
-}
-
-.calendar-nav-btn:hover {
-    background: var(--light-orange);
-}
-
-/* 月間統計 */
-.monthly-stats {
-    background: var(--gray-50);
-    padding: 16px;
-    border-radius: 8px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    text-align: center;
-}
-
-.monthly-stat {
-    background: var(--white);
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid var(--gray-200);
-}
-
-.monthly-stat-value {
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--primary-orange);
-    display: block;
-}
-
-/* ボタンスタイル */
-.btn-primary {
-    background: var(--primary-orange);
-    color: var(--white);
-    border: none;
-    transition: all 0.2s;
-}
-
-.btn-primary:hover {
-    background: var(--dark-orange);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(229, 81, 0, 0.3);
-}
-
-.btn-secondary {
-    background: var(--gray-200);
-    color: var(--gray-800);
-    border: none;
-}
-
-.btn-secondary:hover {
-    background: var(--gray-300);
-    transform: translateY(-1px);
-}
-
-.btn-danger {
-    background: #d32f2f;
-    color: var(--white);
-}
-
-.btn-danger:hover {
-    background: #b71c1c;
-    transform: translateY(-1px);
-}
-
-/* インプットフィールド */
-.input-field:focus {
-    outline: none;
-    border-color: var(--primary-orange);
-    box-shadow: 0 0 0 3px rgba(229, 81, 0, 0.1);
-}
-
-/* PWAインストール促進 */
-.install-prompt {
-    background: var(--primary-orange);
-    color: var(--white);
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    display: none;
-}
-
-.install-prompt button {
-    background: var(--white);
-    color: var(--primary-orange);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 8px;
-    font-size: 12px;
-}
-
-.install-prompt button:hover {
-    background: var(--light-orange);
-}
-
-/* バックアップリマインダー */
-.backup-reminder {
-    background: var(--primary-orange);
-    color: var(--white);
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    display: none;
-}
-
-.backup-reminder.warning {
-    background: var(--accent-orange);
-    color: var(--gray-800);
-}
-
-.backup-reminder.danger {
-    background: #d32f2f;
-    color: var(--white);
-}
-
-.backup-reminder-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: inherit;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 8px;
-    transition: all 0.2s;
-}
-
-.backup-reminder-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* バックアップ情報セクション */
-.backup-info-section {
-    background: var(--light-orange);
-    padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    border-left: 4px solid var(--primary-orange);
-}
-
-.backup-stat-value {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--primary-orange);
-    display: block;
-}
-
-/* トースト */
-.toast {
-    position: fixed;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--gray-900);
-    color: var(--white);
-    padding: 12px 20px;
-    border-radius: 8px;
-    display: none;
-    z-index: 1000;
-    max-width: 90%;
-    text-align: center;
-    font-size: 14px;
-}
+        /* 高解像度スマートフォン向け最適化 */
+        @media (min-height: 800px) and (max-width: 500px) {
+            body {
+                padding: 30px 20px;
+            }
+
+            .orange-line {
+                top: 80px;
+                width: 400px;
+                height: 10px;
+            }
+
+            .gold-triangle {
+                top: -80px;
+                right: -80px;
+                border-left: 280px solid var(--accent-gold);
+                border-top: 280px solid transparent;
+                border-bottom: 280px solid transparent;
+            }
+
+            .dots-container {
+                right: 80px;
+                top: 300px;
+                transform: scale(2.5);
+            }
+
+            .white-triangle {
+                left: -60px;
+                bottom: 200px;
+                width: 240px;
+                height: 240px;
+                border: 6px solid var(--white);
+            }
+
+            .orange-semicircle {
+                right: -250px;
+                bottom: -250px;
+                width: 600px;
+                height: 600px;
+            }
+
+            .arrow-shape {
+                width: 200px;
+                height: 250px;
+                left: 50px;
+                bottom: 300px;
+            }
+
+            .arrow-line.shaft {
+                width: 18px;
+                height: 160px;
+                left: 91px;
+            }
+
+            .arrow-line.left-wing,
+            .arrow-line.right-wing {
+                width: 18px;
+                height: 120px;
+            }
+
+            .arrow-line.left-wing {
+                left: 40px;
+                bottom: 140px;
+                transform: rotate(45deg);
+                transform-origin: bottom center;
+            }
+
+            .arrow-line.right-wing {
+                left: 142px;
+                bottom: 140px;
+                transform: rotate(-45deg);
+                transform-origin: bottom center;
+            }
+
+            .accent-circle {
+                top: 500px;
+                left: -150px;
+                width: 300px;
+                height: 300px;
+                border: 5px solid var(--accent-gold);
+            }
+
+            .container {
+                max-width: 450px;
+                margin-top: 100px;
+            }
+
+            .header {
+                margin-bottom: 40px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+                margin-bottom: 12px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .task-card-compact {
+                padding: 20px 22px;
+                margin-bottom: 16px;
+                min-height: 80px;
+                border-radius: 20px;
+            }
+
+            .task-name-compact {
+                font-size: 19px;
+            }
+
+            .task-start-date {
+                font-size: 14px;
+                padding: 5px 12px;
+                border-radius: 10px;
+            }
+
+            .streak-compact {
+                font-size: 16px;
+            }
+
+            .streak-number-compact {
+                font-size: 18px;
+            }
+
+            .status-indicator {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .settings-btn {
+                top: 30px;
+                right: 30px;
+                padding: 16px;
+                font-size: 18px;
+                border-radius: 16px;
+            }
+
+            .add-task-btn {
+                bottom: 40px;
+                right: 30px;
+                width: 72px;
+                height: 72px;
+                font-size: 32px;
+            }
+
+            .backup-reminder {
+                padding: 20px 24px;
+                margin-bottom: 30px;
+                border-radius: 20px;
+                font-size: 16px;
+            }
+
+            .backup-reminder-title {
+                font-size: 17px;
+                margin-bottom: 8px;
+            }
+
+            .backup-reminder-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+                border-radius: 10px;
+                margin-top: 12px;
+                margin-right: 12px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- 幾何学的背景要素 -->
+    <div class="geometric-bg">
+        <div class="orange-line"></div>
+        <div class="gold-triangle"></div>
+        <div class="dots-container">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+        <div class="white-triangle"></div>
+        <div class="orange-semicircle"></div>
+        <div class="arrow-shape">
+            <div class="arrow-line shaft"></div>
+            <div class="arrow-line left-wing"></div>
+            <div class="arrow-line right-wing"></div>
+        </div>
+        <div class="accent-circle"></div>
+    </div>
+
     <div class="container">
         <!-- PWAインストール促進 -->
         <div id="install-prompt" class="install-prompt">
@@ -1621,9 +1170,9 @@ body {
         <!-- 設定ボタン -->
         <button class="settings-btn" onclick="openSettings()">⚙️</button>
         
-        <!-- コンパクトタスクリスト -->
+        <!-- タスクリスト -->
         <div id="task-list">
-            <!-- ここにコンパクトなタスクカードが動的に追加されます -->
+            <!-- ここにタスクカードが動的に追加されます -->
         </div>
         
         <!-- 空の状態 -->
@@ -1640,13 +1189,13 @@ body {
     <div id="add-task-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">新しいタスクを追加</h3>
+                <h3 class="modal-title">✨ 新しいタスクを追加</h3>
                 <button class="modal-close" onclick="closeAddTaskModal()">×</button>
             </div>
             <div class="modal-body">
-                <input type="text" id="task-name-input" class="input-field" placeholder="タスク名を入力" maxlength="30">
+                <input type="text" id="task-name-input" class="input-field" placeholder="タスク名を入力（例：読書、筋トレ、英語学習）" maxlength="30">
                 <div>
-                    <button class="btn btn-primary" onclick="addTask()">追加</button>
+                    <button class="btn btn-primary" onclick="addTask()">✨ タスクを追加</button>
                     <button class="btn btn-secondary" onclick="closeAddTaskModal()">キャンセル</button>
                 </div>
             </div>
@@ -1657,7 +1206,7 @@ body {
     <div id="task-detail-modal" class="modal">
         <div class="modal-content">
             <div class="task-detail-header">
-                <button class="modal-close" onclick="closeTaskDetail()" style="position: absolute; top: 24px; right: 28px; color: white; z-index: 2; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); background: rgba(255, 255, 255, 0.2); width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.3); display: flex; align-items: center; justify-content: center;">×</button>
+                <button class="modal-close" onclick="closeTaskDetail()">×</button>
                 <div class="task-detail-name" id="detail-task-name">タスク名</div>
                 <div class="task-detail-stats">
                     <div class="task-stat">
@@ -1678,17 +1227,13 @@ body {
                 </button>
                 
                 <!-- 直近7日間 -->
-                <div class="section-title">
-                    📅 直近7日間
-                </div>
+                <div class="section-title">📅 直近7日間</div>
                 <div class="weekly-view" id="detail-weekly-view">
                     <!-- 直近7日間が動的に生成される -->
                 </div>
                 
                 <!-- カレンダー -->
-                <div class="section-title">
-                    📊 実行履歴
-                </div>
+                <div class="section-title">📊 実行履歴</div>
                 <div class="calendar-header">
                     <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
                     <div class="calendar-title" id="calendar-title">2024年8月</div>
@@ -1719,7 +1264,7 @@ body {
                 <!-- 編集セクション -->
                 <div class="edit-zone">
                     <div class="edit-zone-title">✏️ タスクの編集</div>
-                    <div class="edit-zone-desc">タスク名を変更できます。</div>
+                    <div class="edit-zone-desc">タスク名を変更できます。履歴はすべて保持されます。</div>
                     <button class="btn btn-secondary" onclick="openEditTaskModal()">タスク名を編集</button>
                 </div>
                 
@@ -1742,7 +1287,7 @@ body {
             </div>
             <div class="modal-body">
                 <input type="text" id="edit-task-name-input" class="input-field" placeholder="新しいタスク名を入力" maxlength="30">
-                <div style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 6px; font-size: 13px; color: #6b7280;">
+                <div style="margin-bottom: 16px; padding: 12px; background: var(--light-gold); border-radius: 6px; font-size: 13px; color: var(--gray-800);">
                     💡 タスク名を変更しても、これまでの実行履歴はすべて保持されます。
                 </div>
                 <div>
@@ -1762,7 +1307,7 @@ body {
             </div>
             <div class="modal-body" style="text-align: center;">
                 <p>本当にこのタスクを削除しますか？</p>
-                <p style="font-weight: bold; margin: 16px 0;"><span id="delete-task-name"></span></p>
+                <p style="font-weight: bold; margin: 16px 0; color: var(--primary-orange);"><span id="delete-task-name"></span></p>
                 <p style="color: #dc2626; font-size: 14px; margin-bottom: 20px;">すべての実行履歴も削除され、この操作は取り消せません。</p>
                 <div>
                     <button class="btn btn-secondary" onclick="closeDeleteConfirm()">キャンセル</button>
@@ -1782,9 +1327,7 @@ body {
             <div class="modal-body">
                 <!-- バックアップ状況 -->
                 <div class="backup-info-section">
-                    <div class="backup-info-title">
-                        📊 バックアップ状況
-                    </div>
+                    <div class="backup-info-title">📊 バックアップ状況</div>
                     <div class="backup-stats">
                         <div class="backup-stat">
                             <span class="backup-stat-value" id="backup-status-days">-</span>
@@ -1795,40 +1338,37 @@ body {
                             <div class="backup-stat-label">安全レベル</div>
                         </div>
                     </div>
-                    <div id="last-backup-date" style="font-size: 12px; color: #6b7280; text-align: center;">
+                    <div id="last-backup-date" style="font-size: 12px; color: var(--gray-600); text-align: center;">
                         最終バックアップ: 未実行
                     </div>
                 </div>
-
-                <!-- データ整合性チェック -->
-<div class="backup-info-section">
-    <div class="backup-info-title">
-        🔍 データ整合性
-    </div>
-    <div class="backup-stats">
-        <div class="backup-stat">
-            <span class="backup-stat-value" id="data-integrity-status">未チェック</span>
-            <div class="backup-stat-label">データ状態</div>
-        </div>
-        <div class="backup-stat">
-            <span class="backup-stat-value" id="data-integrity-count">-</span>
-            <div class="backup-stat-label">記録総数</div>
-        </div>
-    </div>
-    <div id="last-integrity-check" style="font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 12px;">
-        最終チェック: 起動時に自動実行
-    </div>
-    <button class="btn btn-secondary" onclick="runDataIntegrityCheck(true)" style="width: 100%; font-size: 13px;">
-        🔍 今すぐデータチェック
-    </button>
-</div>
                 
+                <!-- データ整合性チェック -->
+                <div class="backup-info-section" style="background: var(--light-orange); border-left: 5px solid var(--primary-orange);">
+                    <div class="backup-info-title">🔍 データ整合性</div>
+                    <div class="backup-stats">
+                        <div class="backup-stat" style="border: 2px solid var(--primary-orange);">
+                            <span class="backup-stat-value" id="data-integrity-status">未チェック</span>
+                            <div class="backup-stat-label">データ状態</div>
+                        </div>
+                        <div class="backup-stat" style="border: 2px solid var(--primary-orange);">
+                            <span class="backup-stat-value" id="data-integrity-count">-</span>
+                            <div class="backup-stat-label">記録総数</div>
+                        </div>
+                    </div>
+                    <div id="last-integrity-check" style="font-size: 12px; color: var(--gray-600); text-align: center; margin-bottom: 12px;">
+                        最終チェック: 起動時に自動実行
+                    </div>
+                    <button class="btn btn-secondary" onclick="runDataIntegrityCheck(true)" style="width: 100%; font-size: 13px;">
+                        🔍 今すぐデータチェック
+                    </button>
+                </div>
                 
                 <!-- リマインダー設定 -->
-                <div class="backup-settings">
-                    <div class="backup-setting-row">
-                        <span class="backup-setting-label">リマインダー頻度</span>
-                        <select id="backup-reminder-frequency" class="backup-setting-select" onchange="updateBackupReminderSettings()">
+                <div style="background: var(--light-gold); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="font-size: 14px; color: var(--gray-800); font-weight: 600;">リマインダー頻度</span>
+                        <select id="backup-reminder-frequency" style="padding: 6px 12px; border: 1px solid var(--accent-gold); border-radius: 6px; font-size: 12px; background: var(--white);" onchange="updateBackupReminderSettings()">
                             <option value="off">無効</option>
                             <option value="3">3日ごと</option>
                             <option value="7">1週間ごと</option>
@@ -1844,7 +1384,7 @@ body {
                     <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()" style="width: 100%;">📥 データをインポート</button>
                 </div>
                 
-                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; font-size: 13px; color: #6b7280; margin-bottom: 16px;">
+                <div style="background: var(--light-gold); padding: 16px; border-radius: 8px; font-size: 13px; color: var(--gray-800); margin-bottom: 16px;">
                     <strong>💡 バックアップのすすめ</strong><br>
                     定期的にデータをエクスポートして、安全な場所（GoogleDriveなど）に保存することをお勧めします。
                 </div>
@@ -1864,8 +1404,10 @@ body {
         let currentCalendarDate = new Date();
         let backupSettings = {
             lastBackupDate: null,
-            reminderFrequency: 7, // デフォルト: 1週間
-            lastReminderDismiss: null
+            reminderFrequency: 7,
+            lastReminderDismiss: null,
+            lastIntegrityCheck: null,
+            integrityIssuesFixed: 0
         };
         
         // ページ読み込み時の初期化
@@ -1881,6 +1423,9 @@ body {
                 updateBackupStatus();
                 checkBackupReminder();
                 
+                // 起動時のデータ整合性チェック
+                setTimeout(() => runDataIntegrityCheck(false), 1000);
+                
                 // 通知許可の取得
                 if ('Notification' in window && Notification.permission === 'default') {
                     Notification.requestPermission();
@@ -1892,6 +1437,364 @@ body {
                 showToast('アプリの初期化中にエラーが発生しました');
             }
         });
+
+        // タスクの開始日を取得する関数
+        function getTaskStartDate(task) {
+            try {
+                // 完了記録がある場合は最初の完了日を開始日とする
+                if (task.completedDates && task.completedDates.length > 0) {
+                    const sortedDates = [...task.completedDates].sort();
+                    return sortedDates[0];
+                }
+                
+                // 完了記録がない場合は作成日を開始日とする
+                if (task.createdAt) {
+                    return task.createdAt.split('T')[0]; // ISO形式から日付部分のみ取得
+                }
+                
+                // どちらもない場合は今日を返す
+                return new Date().toISOString().split('T')[0];
+            } catch (error) {
+                console.error('開始日取得エラー:', error);
+                return new Date().toISOString().split('T')[0];
+            }
+        }
+
+        // 日付を「YYYY/MM/DD」形式にフォーマットする関数
+        function formatStartDate(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}/${month}/${day}`;
+            } catch (error) {
+                console.error('日付フォーマットエラー:', error);
+                return dateStr;
+            }
+        }
+
+        // 開始日からの経過日数を計算する関数
+        function calculateDaysSinceStart(startDate) {
+            try {
+                const start = new Date(startDate);
+                const today = new Date();
+                const diffTime = today - start;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                return Math.max(0, diffDays + 1); // +1して開始日も含める
+            } catch (error) {
+                console.error('経過日数計算エラー:', error);
+                return 1;
+            }
+        }
+
+        // データ整合性チェック機能
+        function runDataIntegrityCheck(showResults = false) {
+            try {
+                console.log('データ整合性チェック開始');
+                
+                let totalIssues = 0;
+                let fixedIssues = 0;
+                const issueDetails = [];
+                let totalRecords = 0;
+                
+                // タスクデータの基本チェック
+                if (!Array.isArray(tasks)) {
+                    console.error('タスクデータが配列ではありません');
+                    tasks = [];
+                    totalIssues++;
+                    fixedIssues++;
+                    issueDetails.push('タスクデータを空の配列に初期化しました');
+                }
+                
+                // 各タスクの整合性チェック
+                for (let i = tasks.length - 1; i >= 0; i--) {
+                    const task = tasks[i];
+                    let taskFixed = false;
+                    
+                    // タスクIDのチェック
+                    if (!task.id || typeof task.id !== 'number') {
+                        task.id = Date.now() + Math.random() * 1000;
+                        totalIssues++;
+                        fixedIssues++;
+                        taskFixed = true;
+                        issueDetails.push(`タスク「${task.name || '無名'}」: 無効なIDを修正`);
+                    }
+                    
+                    // タスク名のチェック
+                    if (!task.name || typeof task.name !== 'string' || task.name.trim() === '') {
+                        if (!task.name) {
+                            task.name = `タスク${task.id}`;
+                            totalIssues++;
+                            fixedIssues++;
+                            taskFixed = true;
+                            issueDetails.push(`タスクID${task.id}: 空のタスク名を修正`);
+                        } else {
+                            task.name = task.name.toString().trim();
+                            if (task.name === '') {
+                                task.name = `タスク${task.id}`;
+                                totalIssues++;
+                                fixedIssues++;
+                                taskFixed = true;
+                                issueDetails.push(`タスクID${task.id}: 空のタスク名を修正`);
+                            }
+                        }
+                    }
+                    
+                    // 完了日配列のチェック
+                    if (!Array.isArray(task.completedDates)) {
+                        task.completedDates = [];
+                        totalIssues++;
+                        fixedIssues++;
+                        taskFixed = true;
+                        issueDetails.push(`タスク「${task.name}」: completedDatesを配列に修正`);
+                    }
+                    
+                    // 作成日のチェック
+                    if (!task.createdAt || !isValidDate(task.createdAt)) {
+                        task.createdAt = new Date().toISOString();
+                        totalIssues++;
+                        fixedIssues++;
+                        taskFixed = true;
+                        issueDetails.push(`タスク「${task.name}」: 作成日を現在日時に設定`);
+                    }
+                    
+                    // 完了日の詳細チェック
+                    const originalDatesCount = task.completedDates.length;
+                    const today = new Date();
+                    const todayStr = today.toISOString().split('T')[0];
+                    
+                    // 無効な日付と重複を除去
+                    const validDates = new Set();
+                    const invalidDates = [];
+                    const futureDates = [];
+                    const duplicates = [];
+                    
+                    task.completedDates.forEach(dateStr => {
+                        // 日付形式チェック
+                        if (!isValidDateString(dateStr)) {
+                            invalidDates.push(dateStr);
+                            return;
+                        }
+                        
+                        // 未来の日付チェック
+                        if (dateStr > todayStr) {
+                            futureDates.push(dateStr);
+                            return;
+                        }
+                        
+                        // 重複チェック
+                        if (validDates.has(dateStr)) {
+                            duplicates.push(dateStr);
+                            return;
+                        }
+                        
+                        validDates.add(dateStr);
+                    });
+                    
+                    // 修正された配列を設定
+                    task.completedDates = Array.from(validDates).sort();
+                    
+                    // 問題があった場合の記録
+                    if (invalidDates.length > 0) {
+                        totalIssues += invalidDates.length;
+                        fixedIssues += invalidDates.length;
+                        taskFixed = true;
+                        issueDetails.push(`タスク「${task.name}」: ${invalidDates.length}件の無効な日付を除去`);
+                    }
+                    
+                    if (futureDates.length > 0) {
+                        totalIssues += futureDates.length;
+                        fixedIssues += futureDates.length;
+                        taskFixed = true;
+                        issueDetails.push(`タスク「${task.name}」: ${futureDates.length}件の未来の日付を除去`);
+                    }
+                    
+                    if (duplicates.length > 0) {
+                        totalIssues += duplicates.length;
+                        fixedIssues += duplicates.length;
+                        taskFixed = true;
+                        issueDetails.push(`タスク「${task.name}」: ${duplicates.length}件の重複日付を除去`);
+                    }
+                    
+                    totalRecords += task.completedDates.length;
+                    
+                    // タスクが空で、完了記録もない場合は削除を検討
+                    if (!task.name.trim() && task.completedDates.length === 0) {
+                        tasks.splice(i, 1);
+                        totalIssues++;
+                        fixedIssues++;
+                        taskFixed = true;
+                        issueDetails.push(`空のタスク（ID: ${task.id}）を削除`);
+                    }
+                }
+                
+                // 重複タスクIDのチェック
+                const taskIds = new Set();
+                const duplicateIdTasks = [];
+                
+                tasks.forEach(task => {
+                    if (taskIds.has(task.id)) {
+                        duplicateIdTasks.push(task);
+                    } else {
+                        taskIds.add(task.id);
+                    }
+                });
+                
+                // 重複IDを修正
+                duplicateIdTasks.forEach(task => {
+                    const oldId = task.id;
+                    task.id = Date.now() + Math.random() * 1000;
+                    totalIssues++;
+                    fixedIssues++;
+                    issueDetails.push(`タスク「${task.name}」: 重複ID ${oldId} を ${task.id} に修正`);
+                });
+                
+                // 修正があった場合は保存
+                if (fixedIssues > 0) {
+                    saveTasks();
+                    console.log(`データ整合性チェック完了: ${fixedIssues}件の問題を修正`);
+                }
+                
+                // バックアップ設定を更新
+                backupSettings.lastIntegrityCheck = new Date().toISOString();
+                if (fixedIssues > 0) {
+                    backupSettings.integrityIssuesFixed += fixedIssues;
+                }
+                saveBackupSettings();
+                
+                // UI更新
+                updateDataIntegrityStatus(totalIssues, fixedIssues, totalRecords);
+                
+                // 結果表示
+                if (showResults) {
+                    showIntegrityCheckResults(totalIssues, fixedIssues, issueDetails, totalRecords);
+                }
+                
+                // メイン画面も更新
+                renderTasks();
+                
+                console.log(`整合性チェック結果: 総問題数 ${totalIssues}, 修正済み ${fixedIssues}, 総記録数 ${totalRecords}`);
+                
+                return {
+                    totalIssues,
+                    fixedIssues,
+                    totalRecords,
+                    issueDetails
+                };
+                
+            } catch (error) {
+                console.error('データ整合性チェックエラー:', error);
+                showToast('データ整合性チェック中にエラーが発生しました');
+                return {
+                    totalIssues: 0,
+                    fixedIssues: 0,
+                    totalRecords: 0,
+                    issueDetails: ['チェック中にエラーが発生しました']
+                };
+            }
+        }
+
+        // 日付文字列の有効性チェック
+        function isValidDateString(dateStr) {
+            if (typeof dateStr !== 'string') return false;
+            
+            // YYYY-MM-DD形式かチェック
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(dateStr)) return false;
+            
+            // 実際に有効な日付かチェック
+            const date = new Date(dateStr);
+            return date.toISOString().split('T')[0] === dateStr;
+        }
+
+        // 日付の有効性チェック（ISO文字列用）
+        function isValidDate(dateStr) {
+            if (typeof dateStr !== 'string') return false;
+            const date = new Date(dateStr);
+            return !isNaN(date.getTime());
+        }
+
+        // データ整合性ステータスを更新
+        function updateDataIntegrityStatus(totalIssues, fixedIssues, totalRecords) {
+            try {
+                const statusElement = document.getElementById('data-integrity-status');
+                const countElement = document.getElementById('data-integrity-count');
+                const checkElement = document.getElementById('last-integrity-check');
+                
+                if (statusElement) {
+                    if (totalIssues === 0) {
+                        statusElement.textContent = '正常';
+                        statusElement.style.color = 'var(--primary-orange)';
+                    } else if (fixedIssues === totalIssues) {
+                        statusElement.textContent = '修正済み';
+                        statusElement.style.color = 'var(--accent-gold)';
+                    } else {
+                        statusElement.textContent = '問題あり';
+                        statusElement.style.color = '#ef4444';
+                    }
+                }
+                
+                if (countElement) {
+                    countElement.textContent = totalRecords.toString();
+                }
+                
+                if (checkElement) {
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+                    checkElement.textContent = `最終チェック: 今日 ${timeStr}`;
+                }
+                
+            } catch (error) {
+                console.error('整合性ステータス更新エラー:', error);
+            }
+        }
+
+        // 整合性チェック結果を表示
+        function showIntegrityCheckResults(totalIssues, fixedIssues, issueDetails, totalRecords) {
+            try {
+                let message = `🔍 データ整合性チェック完了\n\n`;
+                message += `📊 総記録数: ${totalRecords}件\n`;
+                message += `⚠️ 発見された問題: ${totalIssues}件\n`;
+                message += `✅ 修正済み: ${fixedIssues}件\n\n`;
+                
+                if (totalIssues === 0) {
+                    message += `🎉 データに問題はありませんでした！`;
+                    showToast('データは正常です');
+                } else {
+                    message += `📝 修正内容:\n`;
+                    issueDetails.slice(0, 5).forEach((detail, index) => {
+                        message += `${index + 1}. ${detail}\n`;
+                    });
+                    
+                    if (issueDetails.length > 5) {
+                        message += `...他 ${issueDetails.length - 5}件\n`;
+                    }
+                    
+                    showToast(`${fixedIssues}件の問題を修正しました`);
+                }
+                
+                // 詳細結果をコンソールに出力
+                console.log('整合性チェック詳細結果:');
+                console.log('- 総記録数:', totalRecords);
+                console.log('- 問題数:', totalIssues);
+                console.log('- 修正数:', fixedIssues);
+                console.log('- 詳細:', issueDetails);
+                
+                // アラートで結果表示（オプション）
+                if (totalIssues > 0) {
+                    if (confirm(`${message}\n\n詳細をコンソールで確認しますか？`)) {
+                        console.log('=== データ整合性チェック詳細結果 ===');
+                        issueDetails.forEach((detail, index) => {
+                            console.log(`${index + 1}. ${detail}`);
+                        });
+                    }
+                }
+                
+            } catch (error) {
+                console.error('結果表示エラー:', error);
+            }
+        }
         
         // バックアップ設定を読み込み
         function loadBackupSettings() {
@@ -1935,7 +1838,7 @@ body {
                 const now = new Date();
                 let daysSinceBackup = 0;
                 let safetyLevel = '未実行';
-                let safetyColor = '#6b7280';
+                let safetyColor = 'var(--gray-600)';
                 let lastBackupText = '最終バックアップ: 未実行';
                 
                 if (backupSettings.lastBackupDate) {
@@ -1944,16 +1847,16 @@ body {
                     
                     if (daysSinceBackup === 0) {
                         safetyLevel = '安全';
-                        safetyColor = '#10b981';
+                        safetyColor = 'var(--primary-orange)';
                     } else if (daysSinceBackup <= 3) {
                         safetyLevel = '良好';
-                        safetyColor = '#10b981';
+                        safetyColor = 'var(--primary-orange)';
                     } else if (daysSinceBackup <= 7) {
                         safetyLevel = '普通';
-                        safetyColor = '#f59e0b';
+                        safetyColor = 'var(--accent-gold)';
                     } else if (daysSinceBackup <= 14) {
                         safetyLevel = '注意';
-                        safetyColor = '#f59e0b';
+                        safetyColor = 'var(--accent-gold)';
                     } else {
                         safetyLevel = '危険';
                         safetyColor = '#ef4444';
@@ -2086,313 +1989,6 @@ body {
             }
         }
         
-        function runDataIntegrityCheck(showResults = false) {
-        try {
-            console.log('データ整合性チェック開始');
-            
-            let totalIssues = 0;
-            let fixedIssues = 0;
-            const issueDetails = [];
-            let totalRecords = 0;
-            
-            // タスクデータの基本チェック
-            if (!Array.isArray(tasks)) {
-                console.error('タスクデータが配列ではありません');
-                tasks = [];
-                totalIssues++;
-                fixedIssues++;
-                issueDetails.push('タスクデータを空の配列に初期化しました');
-            }
-            
-            // 各タスクの整合性チェック
-            for (let i = tasks.length - 1; i >= 0; i--) {
-                const task = tasks[i];
-                let taskFixed = false;
-                
-                // タスクIDのチェック
-                if (!task.id || typeof task.id !== 'number') {
-                    task.id = Date.now() + Math.random() * 1000;
-                    totalIssues++;
-                    fixedIssues++;
-                    taskFixed = true;
-                    issueDetails.push(`タスク「${task.name || '無名'}」: 無効なIDを修正`);
-                }
-                
-                // タスク名のチェック
-                if (!task.name || typeof task.name !== 'string' || task.name.trim() === '') {
-                    if (!task.name) {
-                        task.name = `タスク${task.id}`;
-                        totalIssues++;
-                        fixedIssues++;
-                        taskFixed = true;
-                        issueDetails.push(`タスクID${task.id}: 空のタスク名を修正`);
-                    } else {
-                        task.name = task.name.toString().trim();
-                        if (task.name === '') {
-                            task.name = `タスク${task.id}`;
-                            totalIssues++;
-                            fixedIssues++;
-                            taskFixed = true;
-                            issueDetails.push(`タスクID${task.id}: 空のタスク名を修正`);
-                        }
-                    }
-                }
-                
-                // 完了日配列のチェック
-                if (!Array.isArray(task.completedDates)) {
-                    task.completedDates = [];
-                    totalIssues++;
-                    fixedIssues++;
-                    taskFixed = true;
-                    issueDetails.push(`タスク「${task.name}」: completedDatesを配列に修正`);
-                }
-                
-                // 作成日のチェック
-                if (!task.createdAt || !isValidDate(task.createdAt)) {
-                    task.createdAt = new Date().toISOString();
-                    totalIssues++;
-                    fixedIssues++;
-                    taskFixed = true;
-                    issueDetails.push(`タスク「${task.name}」: 作成日を現在日時に設定`);
-                }
-                
-                // 完了日の詳細チェック
-                const originalDatesCount = task.completedDates.length;
-                const today = new Date();
-                const todayStr = today.toISOString().split('T')[0];
-                
-                // 無効な日付と重複を除去
-                const validDates = new Set();
-                const invalidDates = [];
-                const futureDates = [];
-                const duplicates = [];
-                
-                task.completedDates.forEach(dateStr => {
-                    // 日付形式チェック
-                    if (!isValidDateString(dateStr)) {
-                        invalidDates.push(dateStr);
-                        return;
-                    }
-                    
-                    // 未来の日付チェック
-                    if (dateStr > todayStr) {
-                        futureDates.push(dateStr);
-                        return;
-                    }
-                    
-                    // 重複チェック
-                    if (validDates.has(dateStr)) {
-                        duplicates.push(dateStr);
-                        return;
-                    }
-                    
-                    validDates.add(dateStr);
-                });
-                
-                // 修正された配列を設定
-                task.completedDates = Array.from(validDates).sort();
-                
-                // 問題があった場合の記録
-                if (invalidDates.length > 0) {
-                    totalIssues += invalidDates.length;
-                    fixedIssues += invalidDates.length;
-                    taskFixed = true;
-                    issueDetails.push(`タスク「${task.name}」: ${invalidDates.length}件の無効な日付を除去`);
-                }
-                
-                if (futureDates.length > 0) {
-                    totalIssues += futureDates.length;
-                    fixedIssues += futureDates.length;
-                    taskFixed = true;
-                    issueDetails.push(`タスク「${task.name}」: ${futureDates.length}件の未来の日付を除去`);
-                }
-                
-                if (duplicates.length > 0) {
-                    totalIssues += duplicates.length;
-                    fixedIssues += duplicates.length;
-                    taskFixed = true;
-                    issueDetails.push(`タスク「${task.name}」: ${duplicates.length}件の重複日付を除去`);
-                }
-                
-                totalRecords += task.completedDates.length;
-                
-                // タスクが空で、完了記録もない場合は削除を検討
-                if (!task.name.trim() && task.completedDates.length === 0) {
-                    tasks.splice(i, 1);
-                    totalIssues++;
-                    fixedIssues++;
-                    taskFixed = true;
-                    issueDetails.push(`空のタスク（ID: ${task.id}）を削除`);
-                }
-            }
-            
-            // 重複タスクIDのチェック
-            const taskIds = new Set();
-            const duplicateIdTasks = [];
-            
-            tasks.forEach(task => {
-                if (taskIds.has(task.id)) {
-                    duplicateIdTasks.push(task);
-                } else {
-                    taskIds.add(task.id);
-                }
-            });
-            
-            // 重複IDを修正
-            duplicateIdTasks.forEach(task => {
-                const oldId = task.id;
-                task.id = Date.now() + Math.random() * 1000;
-                totalIssues++;
-                fixedIssues++;
-                issueDetails.push(`タスク「${task.name}」: 重複ID ${oldId} を ${task.id} に修正`);
-            });
-            
-            // 修正があった場合は保存
-            if (fixedIssues > 0) {
-                saveTasks();
-                console.log(`データ整合性チェック完了: ${fixedIssues}件の問題を修正`);
-            }
-            
-            // バックアップ設定を更新
-            backupSettings.lastIntegrityCheck = new Date().toISOString();
-            if (fixedIssues > 0) {
-                backupSettings.integrityIssuesFixed += fixedIssues;
-            }
-            saveBackupSettings();
-            
-            // UI更新
-            updateDataIntegrityStatus(totalIssues, fixedIssues, totalRecords);
-            
-            // 結果表示
-            if (showResults) {
-                showIntegrityCheckResults(totalIssues, fixedIssues, issueDetails, totalRecords);
-            }
-            
-            // メイン画面も更新
-            renderTasks();
-            
-            console.log(`整合性チェック結果: 総問題数 ${totalIssues}, 修正済み ${fixedIssues}, 総記録数 ${totalRecords}`);
-            
-            return {
-                totalIssues,
-                fixedIssues,
-                totalRecords,
-                issueDetails
-            };
-            
-        } catch (error) {
-            console.error('データ整合性チェックエラー:', error);
-            showToast('データ整合性チェック中にエラーが発生しました');
-            return {
-                totalIssues: 0,
-                fixedIssues: 0,
-                totalRecords: 0,
-                issueDetails: ['チェック中にエラーが発生しました']
-            };
-        }
-    }
-
-    // 日付文字列の有効性チェック
-    function isValidDateString(dateStr) {
-        if (typeof dateStr !== 'string') return false;
-        
-        // YYYY-MM-DD形式かチェック
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateRegex.test(dateStr)) return false;
-        
-        // 実際に有効な日付かチェック
-        const date = new Date(dateStr);
-        return date.toISOString().split('T')[0] === dateStr;
-    }
-
-    // 日付の有効性チェック（ISO文字列用）
-    function isValidDate(dateStr) {
-        if (typeof dateStr !== 'string') return false;
-        const date = new Date(dateStr);
-        return !isNaN(date.getTime());
-    }
-
-    // データ整合性ステータスを更新
-    function updateDataIntegrityStatus(totalIssues, fixedIssues, totalRecords) {
-        try {
-            const statusElement = document.getElementById('data-integrity-status');
-            const countElement = document.getElementById('data-integrity-count');
-            const checkElement = document.getElementById('last-integrity-check');
-            
-            if (statusElement) {
-                if (totalIssues === 0) {
-                    statusElement.textContent = '正常';
-                    statusElement.style.color = '#10b981';
-                } else if (fixedIssues === totalIssues) {
-                    statusElement.textContent = '修正済み';
-                    statusElement.style.color = '#f59e0b';
-                } else {
-                    statusElement.textContent = '問題あり';
-                    statusElement.style.color = '#ef4444';
-                }
-            }
-            
-            if (countElement) {
-                countElement.textContent = totalRecords.toString();
-            }
-            
-            if (checkElement) {
-                const now = new Date();
-                const timeStr = now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-                checkElement.textContent = `最終チェック: 今日 ${timeStr}`;
-            }
-            
-        } catch (error) {
-            console.error('整合性ステータス更新エラー:', error);
-        }
-    }
-
-    // 整合性チェック結果を表示
-    function showIntegrityCheckResults(totalIssues, fixedIssues, issueDetails, totalRecords) {
-        try {
-            let message = `🔍 データ整合性チェック完了\n\n`;
-            message += `📊 総記録数: ${totalRecords}件\n`;
-            message += `⚠️ 発見された問題: ${totalIssues}件\n`;
-            message += `✅ 修正済み: ${fixedIssues}件\n\n`;
-            
-            if (totalIssues === 0) {
-                message += `🎉 データに問題はありませんでした！`;
-                showToast('データは正常です');
-            } else {
-                message += `📝 修正内容:\n`;
-                issueDetails.slice(0, 5).forEach((detail, index) => {
-                    message += `${index + 1}. ${detail}\n`;
-                });
-                
-                if (issueDetails.length > 5) {
-                    message += `...他 ${issueDetails.length - 5}件\n`;
-                }
-                
-                showToast(`${fixedIssues}件の問題を修正しました`);
-            }
-            
-            // 詳細結果をコンソールに出力
-            console.log('整合性チェック詳細結果:');
-            console.log('- 総記録数:', totalRecords);
-            console.log('- 問題数:', totalIssues);
-            console.log('- 修正数:', fixedIssues);
-            console.log('- 詳細:', issueDetails);
-            
-            // アラートで結果表示（オプション）
-            if (totalIssues > 0) {
-                if (confirm(`${message}\n\n詳細をコンソールで確認しますか？`)) {
-                    console.log('=== データ整合性チェック詳細結果 ===');
-                    issueDetails.forEach((detail, index) => {
-                        console.log(`${index + 1}. ${detail}`);
-                    });
-                }
-            }
-            
-        } catch (error) {
-            console.error('結果表示エラー:', error);
-        }
-    }
-        
         function loadTasks() {
             try {
                 const stored = localStorage.getItem('habit-tracker-tasks');
@@ -2415,107 +2011,56 @@ body {
                 showToast('データの保存に失敗しました');
             }
         }
-
-        // タスクの開始日を取得する関数
-function getTaskStartDate(task) {
-    try {
-        // 完了記録がある場合は最初の完了日を開始日とする
-        if (task.completedDates && task.completedDates.length > 0) {
-            const sortedDates = [...task.completedDates].sort();
-            return sortedDates[0];
-        }
         
-        // 完了記録がない場合は作成日を開始日とする
-        if (task.createdAt) {
-            return task.createdAt.split('T')[0]; // ISO形式から日付部分のみ取得
-        }
-        
-        // どちらもない場合は今日を返す
-        return new Date().toISOString().split('T')[0];
-    } catch (error) {
-        console.error('開始日取得エラー:', error);
-        return new Date().toISOString().split('T')[0];
-    }
-}
-
-// 日付を「YYYY/MM/DD」形式にフォーマットする関数
-function formatStartDate(dateStr) {
-    try {
-        const date = new Date(dateStr);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}/${month}/${day}`;
-    } catch (error) {
-        console.error('日付フォーマットエラー:', error);
-        return dateStr;
-    }
-}
-
-// 開始日からの経過日数を計算する関数
-function calculateDaysSinceStart(startDate) {
-    try {
-        const start = new Date(startDate);
-        const today = new Date();
-        const diffTime = today - start;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        return Math.max(0, diffDays + 1); // +1して開始日も含める
-    } catch (error) {
-        console.error('経過日数計算エラー:', error);
-        return 1;
-    }
-}
-
-        
-        // タスクを画面に表示（コンパクト版）
+        // タスクを画面に表示（更新版）
         function renderTasks() {
-    try {
-        const taskList = document.getElementById('task-list');
-        const emptyState = document.getElementById('empty-state');
-        
-        if (!taskList || !emptyState) {
-            console.error('必要な要素が見つかりません');
-            return;
-        }
-        
-        if (tasks.length === 0) {
-            taskList.innerHTML = '';
-            emptyState.style.display = 'block';
-            return;
-        }
-        
-        emptyState.style.display = 'none';
-        
-        taskList.innerHTML = tasks.map(task => {
-            const streak = calculateStreak(task.completedDates || []);
-            const completedToday = isCompletedToday(task);
-            const startDate = getTaskStartDate(task);
-            const formattedStartDate = formatStartDate(startDate);
-            
-            return `
-                <div class="task-card-compact ${completedToday ? 'completed-today' : ''}" onclick="openTaskDetail(${task.id})">
-                    <div class="task-info">
-                        <div class="task-name-compact">${escapeHtml(task.name || '')}</div>
-                        <div class="task-meta-compact">
-                            <span class="task-start-date">${formattedStartDate}～</span>
-                            <span class="streak-compact">
-                                🔥 <span class="streak-number-compact">${streak}</span>
-                            </span>
+            try {
+                const taskList = document.getElementById('task-list');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (!taskList || !emptyState) {
+                    console.error('必要な要素が見つかりません');
+                    return;
+                }
+                
+                if (tasks.length === 0) {
+                    taskList.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                
+                taskList.innerHTML = tasks.map(task => {
+                    const streak = calculateStreak(task.completedDates || []);
+                    const completedToday = isCompletedToday(task);
+                    const startDate = getTaskStartDate(task);
+                    const formattedStartDate = formatStartDate(startDate);
+                    
+                    return `
+                        <div class="task-card-compact ${completedToday ? 'completed-today' : ''}" onclick="openTaskDetail(${task.id})">
+                            <div class="task-info">
+                                <div class="task-name-compact">${escapeHtml(task.name || '')}</div>
+                                <div class="task-meta-compact">
+                                    <span class="task-start-date">${formattedStartDate}～</span>
+                                    <span class="streak-compact">
+                                        🔥 <span class="streak-number-compact">${streak}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="status-indicator ${completedToday ? 'status-completed' : 'status-pending'}">
+                                ${completedToday ? '✓' : streak}
+                            </div>
                         </div>
-                    </div>
-                    <div class="status-indicator ${completedToday ? 'status-completed' : 'status-pending'}">
-                        ${completedToday ? '✓' : streak}
-                    </div>
-                </div>
-            `;
-        }).join('');
-        
-        console.log('タスク表示更新完了（開始日表示対応）');
-    } catch (error) {
-        console.error('タスク表示エラー:', error);
-        showToast('タスクの表示中にエラーが発生しました');
-    }
-}
+                    `;
+                }).join('');
+                
+                console.log('タスク表示更新完了（開始日表示対応）');
+            } catch (error) {
+                console.error('タスク表示エラー:', error);
+                showToast('タスクの表示中にエラーが発生しました');
+            }
+        }
         
         // HTML エスケープ
         function escapeHtml(text) {
@@ -2647,7 +2192,7 @@ function calculateDaysSinceStart(startDate) {
                     if ('Notification' in window && Notification.permission === 'granted') {
                         new Notification('タスク完了！', {
                             body: `${currentDetailTask.name}を完了しました`,
-                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%236366f1"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
+                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e55100"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
                         });
                     }
                 }
@@ -2795,6 +2340,7 @@ function calculateDaysSinceStart(startDate) {
                 console.error('削除確認エラー:', error);
             }
         }
+
         function openEditTaskModal() {
             try {
                 if (!currentDetailTask) return;
@@ -2869,17 +2415,6 @@ function calculateDaysSinceStart(startDate) {
             } catch (error) {
                 console.error('タスク名保存エラー:', error);
                 showToast('タスク名の保存に失敗しました');
-            }
-        }
-        function confirmDeleteTask() {
-            try {
-                if (!currentDetailTask) return;
-                
-                taskToDelete = currentDetailTask.id;
-                document.getElementById('delete-task-name').textContent = currentDetailTask.name;
-                document.getElementById('delete-confirm-modal').style.display = 'flex';
-            } catch (error) {
-                console.error('削除確認エラー:', error);
             }
         }
         
@@ -2965,7 +2500,7 @@ function calculateDaysSinceStart(startDate) {
                 saveTasks();
                 renderTasks();
                 closeAddTaskModal();
-                showToast('タスクを追加しました');
+                showToast('✨ タスクを追加しました');
                 
                 console.log('タスク追加完了:', taskName);
             } catch (error) {
@@ -3003,7 +2538,7 @@ function calculateDaysSinceStart(startDate) {
                 const exportData = {
                     tasks: tasks,
                     exportDate: new Date().toISOString(),
-                    version: '1.2.0'
+                    version: '2.1.0'
                 };
                 
                 const dataStr = JSON.stringify(exportData, null, 2);
@@ -3050,7 +2585,7 @@ function calculateDaysSinceStart(startDate) {
                             tasks = data.tasks;
                             saveTasks();
                             renderTasks();
-                            showToast('データをインポートしました');
+                            showToast('📥 データをインポートしました');
                             closeSettings();
                             console.log('インポート完了:', tasks.length + '件');
                         } else {
@@ -3170,8 +2705,3 @@ function calculateDaysSinceStart(startDate) {
     </script>
 </body>
 </html>
-
-
-
-
-
