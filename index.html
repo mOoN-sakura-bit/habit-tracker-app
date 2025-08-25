@@ -968,6 +968,30 @@
                         最終バックアップ: 未実行
                     </div>
                 </div>
+
+                <!-- データ整合性チェック -->
+<div class="backup-info-section">
+    <div class="backup-info-title">
+        🔍 データ整合性
+    </div>
+    <div class="backup-stats">
+        <div class="backup-stat">
+            <span class="backup-stat-value" id="data-integrity-status">未チェック</span>
+            <div class="backup-stat-label">データ状態</div>
+        </div>
+        <div class="backup-stat">
+            <span class="backup-stat-value" id="data-integrity-count">-</span>
+            <div class="backup-stat-label">記録総数</div>
+        </div>
+    </div>
+    <div id="last-integrity-check" style="font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 12px;">
+        最終チェック: 起動時に自動実行
+    </div>
+    <button class="btn btn-secondary" onclick="runDataIntegrityCheck(true)" style="width: 100%; font-size: 13px;">
+        🔍 今すぐデータチェック
+    </button>
+</div>
+                
                 
                 <!-- リマインダー設定 -->
                 <div class="backup-settings">
@@ -2259,4 +2283,5 @@
     </script>
 </body>
 </html>
+
 
