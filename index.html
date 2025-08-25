@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>毎日タスクトラッカー</title>
+    <title>To Create Asylum.</title>
     
     <!-- PWA設定 -->
     <link rel="manifest" href="manifest.json">
@@ -2069,43 +2069,60 @@
             return div.innerHTML;
         }
         
-        // 連続日数を計算
-        function calculateStreak(completedDates) {
-            try {
-                if (!completedDates || completedDates.length === 0) return 0;
-                
-                const sortedDates = [...completedDates].sort().reverse();
-                let streak = 0;
-                
-                for (let i = 0; i < sortedDates.length; i++) {
-                    const expectedDate = new Date();
-                    expectedDate.setDate(expectedDate.getDate() - i);
-                    const expectedDateStr = expectedDate.toISOString().split('T')[0];
-                    
-                    if (sortedDates[i] === expectedDateStr) {
-                        streak++;
-                    } else {
-                        break;
-                    }
-                }
-                
-                return streak;
-            } catch (error) {
-                console.error('連続日数計算エラー:', error);
-                return 0;
+        // 修正版：連続日数を計算
+function calculateStreak(completedDates) {
+    try {
+        if (!completedDates || completedDates.length === 0) return 0;
+        
+        const sortedDates = [...completedDates].sort().reverse();
+        let streak = 0;
+        
+        for (let i = 0; i < sortedDates.length; i++) {
+            const expectedDate = new Date();
+            expectedDate.setDate(expectedDate.getDate() - i);
+            const expectedDateStr = getDateString(expectedDate);
+            
+            if (sortedDates[i] === expectedDateStr) {
+                streak++;
+            } else {
+                break;
             }
         }
         
-        // 今日完了しているかチェック
-        function isCompletedToday(task) {
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                return (task.completedDates || []).includes(today);
-            } catch (error) {
-                console.error('完了チェックエラー:', error);
-                return false;
-            }
-        }
+        return streak;
+    } catch (error) {
+        console.error('連続日数計算エラー:', error);
+        return 0;
+    }
+}
+    
+
+        // 指定された日付をローカル時間でYYYY-MM-DD形式に変換
+function getDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+        function getTodayString() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+        
+        // 修正版：今日完了しているかチェック
+function isCompletedToday(task) {
+    try {
+        const today = getTodayString();
+        return (task.completedDates || []).includes(today);
+    } catch (error) {
+        console.error('完了チェックエラー:', error);
+        return false;
+    }
+}
         
         // タスク詳細画面を開く
         function openTaskDetail(taskId) {
@@ -2158,128 +2175,212 @@
             }
         }
         
-        // 詳細画面から完了
-        function completeTaskFromDetail() {
-            try {
-                if (!currentDetailTask) return;
-                
-                const today = new Date().toISOString().split('T')[0];
-                if (!(currentDetailTask.completedDates || []).includes(today)) {
-                    if (!currentDetailTask.completedDates) currentDetailTask.completedDates = [];
-                    currentDetailTask.completedDates.push(today);
-                    saveTasks();
-                    
-                    // 統計値を再計算して更新
-                    const streak = calculateStreak(currentDetailTask.completedDates);
-                    const total = currentDetailTask.completedDates.length;
-                    
-                    document.getElementById('detail-streak').textContent = `🔥 ${streak}`;
-                    document.getElementById('detail-total').textContent = `📊 ${total}`;
-                    
-                    // 完了ボタンの状態を更新
-                    const completeBtn = document.getElementById('detail-complete-btn');
-                    completeBtn.textContent = '✅ 今日は完了済み';
-                    completeBtn.disabled = true;
-                    
-                    // その他の表示も更新
-                    renderDetailWeeklyView(currentDetailTask.completedDates);
-                    renderDetailCalendar(currentDetailTask.completedDates);
-                    renderDetailMonthlyStats(currentDetailTask.completedDates);
-                    
-                    showToast('🎉 タスクを完了しました！');
-                    
-                    // 通知を表示
-                    if ('Notification' in window && Notification.permission === 'granted') {
-                        new Notification('タスク完了！', {
-                            body: `${currentDetailTask.name}を完了しました`,
-                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e55100"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('完了処理エラー:', error);
-                showToast('タスクの完了処理に失敗しました');
+        // 修正版：詳細画面から完了
+function completeTaskFromDetail() {
+    try {
+        if (!currentDetailTask) return;
+        
+        const today = getTodayString();
+        if (!(currentDetailTask.completedDates || []).includes(today)) {
+            if (!currentDetailTask.completedDates) currentDetailTask.completedDates = [];
+            currentDetailTask.completedDates.push(today);
+            saveTasks();
+            
+            // 統計値を再計算して更新
+            const streak = calculateStreak(currentDetailTask.completedDates);
+            const total = currentDetailTask.completedDates.length;
+            
+            document.getElementById('detail-streak').textContent = `🔥 ${streak}`;
+            document.getElementById('detail-total').textContent = `📊 ${total}`;
+            
+            // 完了ボタンの状態を更新
+            const completeBtn = document.getElementById('detail-complete-btn');
+            completeBtn.textContent = '✅ 今日は完了済み';
+            completeBtn.disabled = true;
+            
+            // その他の表示も更新
+            renderDetailWeeklyView(currentDetailTask.completedDates);
+            renderDetailCalendar(currentDetailTask.completedDates);
+            renderDetailMonthlyStats(currentDetailTask.completedDates);
+            
+            showToast('🎉 タスクを完了しました！');
+            
+            // 通知を表示
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('タスク完了！', {
+                    body: `${currentDetailTask.name}を完了しました`,
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e55100"/><text y="70" font-size="60" text-anchor="middle" x="50" fill="white">🔥</text></svg>'
+                });
             }
+        }
+    } catch (error) {
+        console.error('完了処理エラー:', error);
+        showToast('タスクの完了処理に失敗しました');
+    }
+}
+        
+        // 修正版：詳細画面用の直近7日間表示
+function renderDetailWeeklyView(completedDates) {
+    try {
+        const weeklyView = document.getElementById('detail-weekly-view');
+        if (!weeklyView) return;
+        
+        const today = new Date();
+        const completedSet = new Set(completedDates || []);
+        let html = '';
+        
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            const dateStr = getDateString(date);
+            const day = date.getDate();
+            const isCompleted = completedSet.has(dateStr);
+            const isToday = i === 0;
+            
+            let className = 'week-day';
+            if (isCompleted) className += ' completed';
+            else if (isToday) className += ' today';
+            
+            html += `<div class="${className}">${day}</div>`;
         }
         
-        // 詳細画面用の直近7日間表示
-        function renderDetailWeeklyView(completedDates) {
-            try {
-                const weeklyView = document.getElementById('detail-weekly-view');
-                if (!weeklyView) return;
-                
-                const today = new Date();
-                const completedSet = new Set(completedDates || []);
-                let html = '';
-                
-                for (let i = 6; i >= 0; i--) {
-                    const date = new Date(today);
-                    date.setDate(date.getDate() - i);
-                    const dateStr = date.toISOString().split('T')[0];
-                    const day = date.getDate();
-                    const isCompleted = completedSet.has(dateStr);
-                    const isToday = i === 0;
-                    
-                    let className = 'week-day';
-                    if (isCompleted) className += ' completed';
-                    else if (isToday) className += ' today';
-                    
-                    html += `<div class="${className}">${day}</div>`;
-                }
-                
-                weeklyView.innerHTML = html;
-            } catch (error) {
-                console.error('週表示レンダリングエラー:', error);
-            }
+        weeklyView.innerHTML = html;
+    } catch (error) {
+        console.error('週表示レンダリングエラー:', error);
+    }
+}
+
+// 修正版：詳細画面用のカレンダー表示
+function renderDetailCalendar(completedDates) {
+    try {
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+        
+        // タイトルを更新
+        const titleElement = document.getElementById('calendar-title');
+        if (titleElement) {
+            titleElement.textContent = `${year}年${month + 1}月`;
         }
         
-        // 詳細画面用のカレンダー表示
-        function renderDetailCalendar(completedDates) {
-            try {
-                const year = currentCalendarDate.getFullYear();
-                const month = currentCalendarDate.getMonth();
-                
-                // タイトルを更新
-                const titleElement = document.getElementById('calendar-title');
-                if (titleElement) {
-                    titleElement.textContent = `${year}年${month + 1}月`;
-                }
-                
-                // カレンダーの日付を生成
-                const firstDay = new Date(year, month, 1);
-                const startDate = new Date(firstDay);
-                startDate.setDate(startDate.getDate() - firstDay.getDay());
-                
-                const calendarDays = document.getElementById('calendar-days');
-                if (!calendarDays) return;
-                
-                const completedSet = new Set(completedDates || []);
-                const today = new Date().toISOString().split('T')[0];
-                
-                let html = '';
-                
-                for (let i = 0; i < 42; i++) {
-                    const currentDate = new Date(startDate);
-                    currentDate.setDate(startDate.getDate() + i);
-                    const dateStr = currentDate.toISOString().split('T')[0];
-                    const day = currentDate.getDate();
-                    const isCurrentMonth = currentDate.getMonth() === month;
-                    const isCompleted = completedSet.has(dateStr);
-                    const isToday = dateStr === today;
-                    
-                    let className = 'calendar-day';
-                    if (!isCurrentMonth) className += ' other-month';
-                    if (isCompleted) className += ' completed';
-                    if (isToday) className += ' today';
-                    
-                    html += `<div class="${className}">${day}</div>`;
-                }
-                
-                calendarDays.innerHTML = html;
-            } catch (error) {
-                console.error('カレンダーレンダリングエラー:', error);
-            }
+        // カレンダーの日付を生成
+        const firstDay = new Date(year, month, 1);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+        
+        const calendarDays = document.getElementById('calendar-days');
+        if (!calendarDays) return;
+        
+        const completedSet = new Set(completedDates || []);
+        const today = getTodayString();
+        
+        let html = '';
+        
+        for (let i = 0; i < 42; i++) {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+            const dateStr = getDateString(currentDate);
+            const day = currentDate.getDate();
+            const isCurrentMonth = currentDate.getMonth() === month;
+            const isCompleted = completedSet.has(dateStr);
+            const isToday = dateStr === today;
+            
+            let className = 'calendar-day';
+            if (!isCurrentMonth) className += ' other-month';
+            if (isCompleted) className += ' completed';
+            if (isToday) className += ' today';
+            
+            html += `<div class="${className}">${day}</div>`;
         }
+        
+        calendarDays.innerHTML = html;
+    } catch (error) {
+        console.error('カレンダーレンダリングエラー:', error);
+    }
+}
+
+        / 修正版：データ整合性チェック内の日付処理
+function runDataIntegrityCheck(showResults = false) {
+    try {
+        console.log('データ整合性チェック開始');
+        
+        let totalIssues = 0;
+        let fixedIssues = 0;
+        const issueDetails = [];
+        let totalRecords = 0;
+        
+        // タスクデータの基本チェック
+        if (!Array.isArray(tasks)) {
+            console.error('タスクデータが配列ではありません');
+            tasks = [];
+            totalIssues++;
+            fixedIssues++;
+            issueDetails.push('タスクデータを空の配列に初期化しました');
+        }
+        
+        // 各タスクの整合性チェック
+        for (let i = tasks.length - 1; i >= 0; i--) {
+            const task = tasks[i];
+            
+            // ... 他のチェック処理 ...
+            
+            // 完了日の詳細チェック（修正版）
+            const today = getTodayString();
+            
+            // 無効な日付と重複を除去
+            const validDates = new Set();
+            const invalidDates = [];
+            const futureDates = [];
+            const duplicates = [];
+            
+            (task.completedDates || []).forEach(dateStr => {
+                // 日付形式チェック
+                if (!isValidDateString(dateStr)) {
+                    invalidDates.push(dateStr);
+                    return;
+                }
+                
+                // 未来の日付チェック（ローカル時間基準）
+                if (dateStr > today) {
+                    futureDates.push(dateStr);
+                    return;
+                }
+                
+                // 重複チェック
+                if (validDates.has(dateStr)) {
+                    duplicates.push(dateStr);
+                    return;
+                }
+                
+                validDates.add(dateStr);
+            });
+            
+            // 修正された配列を設定
+            task.completedDates = Array.from(validDates).sort();
+            
+            // ... 残りの処理 ...
+            
+            totalRecords += task.completedDates.length;
+        }
+        
+        // ... 残りの整合性チェック処理 ...
+        
+        return {
+            totalIssues,
+            fixedIssues,
+            totalRecords,
+            issueDetails
+        };
+        
+    } catch (error) {
+        console.error('データ整合性チェックエラー:', error);
+        return {
+            totalIssues: 0,
+            fixedIssues: 0,
+            totalRecords: 0,
+            issueDetails: ['チェック中にエラーが発生しました']
+        };
+    }
+}
         
         // 月を変更
         function changeMonth(direction) {
@@ -2705,3 +2806,4 @@
     </script>
 </body>
 </html>
+
