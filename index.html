@@ -1203,8 +1203,8 @@
         
         <!-- ヘッダー -->
         <div class="header">
-            <h1>🔶🔸Task Tracker🔸🔶</h1>
-            <p>To Create Asysum.</p>
+            <h1>Task Tracker</h1>
+            <p id="app-subtitle">継続は力なり！</p>
         </div>
         
         <!-- 設定ボタン -->
@@ -1365,6 +1365,25 @@
                 <button class="modal-close" onclick="closeSettings()">×</button>
             </div>
             <div class="modal-body">
+                <!-- アプリカスタマイズ設定 -->
+                <div class="pwa-section">
+                    <div class="pwa-section-title">🎨 アプリカスタマイズ</div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 14px; color: var(--gray-800); font-weight: 600; margin-bottom: 8px;">
+                            サブタイトル
+                        </label>
+                        <input type="text" id="app-subtitle-input" class="input-field" 
+                               placeholder="継続は力なり！" maxlength="50"
+                               style="font-size: 14px; padding: 12px 16px; margin-bottom: 8px;">
+                        <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 12px;">
+                            アプリのヘッダーに表示されるサブタイトルを変更できます
+                        </div>
+                        <button class="btn btn-secondary" onclick="saveAppSubtitle()" style="width: 100%; font-size: 13px;">
+                            💾 サブタイトルを保存
+                        </button>
+                    </div>
+                </div>
+                
                 <!-- PWAインストール設定 -->
                 <div class="pwa-section">
                     <div class="pwa-section-title">📱 アプリインストール</div>
@@ -1466,6 +1485,9 @@
             lastIntegrityCheck: null,
             integrityIssuesFixed: 0
         };
+        let appSettings = {
+            subtitle: '継続は力なり！'
+        };
         
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
@@ -1474,6 +1496,7 @@
             try {
                 loadTasks();
                 loadBackupSettings();
+                loadAppSettings(); // アプリ設定を読み込み
                 renderTasks();
                 registerServiceWorker();
                 // インストールプロンプトのイベントリスナーは登録するが、自動表示はしない
@@ -1870,6 +1893,73 @@
             }
         }
         
+        // アプリ設定を読み込み
+        function loadAppSettings() {
+            try {
+                const stored = localStorage.getItem('habit-tracker-app-settings');
+                if (stored) {
+                    appSettings = { ...appSettings, ...JSON.parse(stored) };
+                }
+                
+                // サブタイトルをUIに反映
+                updateAppSubtitle();
+                
+                console.log('アプリ設定読み込み完了');
+            } catch (error) {
+                console.error('アプリ設定読み込みエラー:', error);
+            }
+        }
+        
+        // アプリ設定を保存
+        function saveAppSettings() {
+            try {
+                localStorage.setItem('habit-tracker-app-settings', JSON.stringify(appSettings));
+                console.log('アプリ設定保存完了');
+            } catch (error) {
+                console.error('アプリ設定保存エラー:', error);
+            }
+        }
+        
+        // サブタイトルを更新
+        function updateAppSubtitle() {
+            try {
+                const subtitleElement = document.getElementById('app-subtitle');
+                if (subtitleElement && appSettings.subtitle) {
+                    subtitleElement.textContent = appSettings.subtitle;
+                }
+            } catch (error) {
+                console.error('サブタイトル更新エラー:', error);
+            }
+        }
+        
+        // サブタイトルを保存
+        function saveAppSubtitle() {
+            try {
+                const input = document.getElementById('app-subtitle-input');
+                if (!input) return;
+                
+                const newSubtitle = input.value.trim();
+                if (!newSubtitle) {
+                    showToast('サブタイトルを入力してください');
+                    return;
+                }
+                
+                // 設定を更新
+                appSettings.subtitle = newSubtitle;
+                saveAppSettings();
+                
+                // UIに反映
+                updateAppSubtitle();
+                
+                showToast('サブタイトルを保存しました');
+                console.log('サブタイトル更新:', newSubtitle);
+                
+            } catch (error) {
+                console.error('サブタイトル保存エラー:', error);
+                showToast('サブタイトルの保存に失敗しました');
+            }
+        }
+        
         // バックアップ設定を読み込み
         function loadBackupSettings() {
             try {
@@ -2153,7 +2243,7 @@
             return div.innerHTML;
         }
         
-        // 修正版：連続日数を計算
+        // 修正版：連続日数を計算（今日を含む）
 function calculateStreak(completedDates) {
     try {
         if (!completedDates || completedDates.length === 0) return 0;
@@ -2176,6 +2266,34 @@ function calculateStreak(completedDates) {
         return streak;
     } catch (error) {
         console.error('連続日数計算エラー:', error);
+        return 0;
+    }
+}
+
+// 新規：昨日までの連続日数を計算（今日は含まない）
+function calculateStreakUntilYesterday(completedDates) {
+    try {
+        if (!completedDates || completedDates.length === 0) return 0;
+        
+        const sortedDates = [...completedDates].sort().reverse();
+        let streak = 0;
+        
+        // 昨日から遡って計算
+        for (let i = 0; i < sortedDates.length; i++) {
+            const expectedDate = new Date();
+            expectedDate.setDate(expectedDate.getDate() - (i + 1)); // 昨日から開始
+            const expectedDateStr = getDateString(expectedDate);
+            
+            if (sortedDates.find(date => date === expectedDateStr)) {
+                streak++;
+            } else {
+                break;
+            }
+        }
+        
+        return streak;
+    } catch (error) {
+        console.error('昨日までの連続日数計算エラー:', error);
         return 0;
     }
 }
@@ -2651,6 +2769,13 @@ function renderDetailCalendar(completedDates) {
                 if (modal) {
                     updateBackupStatus();
                     updatePWAStatus(); // PWA状態を更新
+                    
+                    // サブタイトル設定の入力欄に現在の値を設定
+                    const subtitleInput = document.getElementById('app-subtitle-input');
+                    if (subtitleInput) {
+                        subtitleInput.value = appSettings.subtitle || '継続は力なり！';
+                    }
+                    
                     modal.style.display = 'flex';
                 }
             } catch (error) {
@@ -2887,4 +3012,3 @@ function renderDetailCalendar(completedDates) {
     </script>
 </body>
 </html>
-
